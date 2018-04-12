@@ -1,0 +1,8 @@
+#include <stdio.h>
+
+int	main(int ac, char **av) {
+	char	buffer[80]; ## 80 a verifier
+
+	gets(buffer);
+	return (0);
+}
