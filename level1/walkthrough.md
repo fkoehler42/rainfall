@@ -2,11 +2,10 @@
 
 > We use [GDB peda](https://github.com/longld/peda) in order to get a better GDB visualization.
 
-Go to:
-1. [The binary](#the-binary): some analysis
-2. [Buffer overflow](#buffer-overflow): how to solve this level
+1. [Analysis](#analysis)
+2. [Exploit](#exploit)
 
-## The binary
+## 1. Analysis
 
 First, execute `level1` and play with it a little:
 
@@ -95,7 +94,7 @@ End of assembler dump.
 Well, well, well. We have a call to `system` which executes code without other any checking. That's our entry point. Now
 we are going to use one famous hacker technic: the *buffer overflow*.
 
-## Buffer overflow
+## 2. Exploit
 
 In order to do so we are going to use the buffer initialize in `main`. The objectives are clear: thanks to `gets` we can
 buffer overflow the `main` function and put afterwards a call to `run` (which starts at `0x08048444`).
