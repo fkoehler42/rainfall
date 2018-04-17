@@ -5,10 +5,10 @@
 1. [Analysis](#analysis)
 2. [Exploit](#exploit)
 
-## 1. Analysis
+## Analysis
 
 Here everything concerning the analysis of the binary.
 
-## 2. Exploit
+## Exploit
 
 Here everything concerning the exploit description.

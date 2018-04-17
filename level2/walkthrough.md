@@ -5,6 +5,6 @@
 1. [Analysis](#analysis)
 2. [Exploit](#exploit)
 
-## 1 - Analysis
+## Analysis
 
-## 2 - Exploit
+## Exploit
