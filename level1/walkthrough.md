@@ -19,7 +19,7 @@ Segmentation fault (core dumped)
 Putting a lot of crap makes `level1` segfaulting that is to say it is not protected somewhere. Let's check what is
 inside this binary `level1`:
 
-```console
+```gdb
 level1@RainFall:~$ gdb level1
 Reading symbols from /home/user/level1/level1...(no debugging symbols found)...done.
 gdb-peda$ info functions
@@ -51,7 +51,7 @@ Non-debugging symbols:
 
 So, we notice several functions such as: `main`, `run`, `gets`, `fwrite` and so on. Let's have a look at `main`:
 
-```console
+```gdb
 Dump of assembler code for function main:
    0x08048480 <+0>:    push   ebp                      ; Stack frame
    0x08048481 <+1>:    mov    ebp,esp                  ; initialization.
@@ -71,7 +71,7 @@ waiting for you to enter something followed by `return`. But, it is not signific
 
 So, let's have a look at it:
 
-```console
+```gdb
 gdb-peda$ disas run
 Dump of assembler code for function run:
    0x08048444 <+0>:     push   ebp
