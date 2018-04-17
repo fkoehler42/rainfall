@@ -3,8 +3,8 @@
 > We use [GDB peda](https://github.com/longld/peda) in order to get a better GDB visualization.
 
 Go to:
-- [The binary](#the-binary): some analysis
-- [Buffer overflow](#buffer-overflow): how to solve this level
+1. [The binary](#the-binary): some analysis
+2. [Buffer overflow](#buffer-overflow): how to solve this level
 
 ## The binary
 
