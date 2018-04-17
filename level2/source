@@ -1,0 +1,23 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+void	p(void) {
+	char	buffer[64];
+	char	*ptr;
+
+	fflush(stdout);
+	ptr = gets(buffer);
+	if (((unsigned int)ptr & 0xb0000000) != 0xb0000000) {
+		puts(buffer);
+		strdup(buffer);
+	}
+	else {
+		printf("(%p)\n", buffer);
+		exit(1);
+	}
+}
+
+int		main(void) {
+	p();
+}
