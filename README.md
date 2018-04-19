@@ -6,6 +6,7 @@
 - 🇬🇧 [Smash stack](http://insecure.org/stf/smashstack.html)
 - 🇫🇷 [Introduction aux buffer overflows](https://zestedesavoir.com/articles/100/introduction-aux-buffer-overflows/)
 - 🇫🇷 [Introduction à la rétroingénierie de binaires](https://zestedesavoir.com/articles/97/introduction-a-la-retroingenierie-de-binaires/)
+- 🇫🇷 [Écrivez votre premier shellcode en asm x86 !](https://zestedesavoir.com/articles/158/ecrivez-votre-premier-shellcode-en-asm-x86/)
 
 ### Shell-codes
 
