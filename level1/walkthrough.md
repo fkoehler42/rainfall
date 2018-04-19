@@ -118,7 +118,7 @@ level1@RainFall:~$ cat /tmp/level1 - | ./level1
 
 > `cat [file] -` means that `cat` open the file then stdin (`-`). Why that? A shell we execute wants some input. Since
 > we want to open a new shell this new shell request for a `stdin`. If not, it closes. So nothing happen. So we provide
-> it a stdin buy adding `-` to `cat` command. An alternative could have been: `(python -c 'print "A" * 76 +
+> it a standard input by adding `-` to `cat` command. An alternative could have been: `(python -c 'print "A" * 76 +
 > "\x44\x84\x04\x08"'; cat) | ./level1`.
 
 Finally:
