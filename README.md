@@ -2,16 +2,31 @@
 
 ## Ressources
 
-- [Buffer Overflow EIP Offset String Generator](http://projects.jason-rush.com/tools/buffer-overflow-eip-offset-string-generator/)
-- [Introduction aux buffer overflows](https://zestedesavoir.com/articles/100/introduction-aux-buffer-overflows/)
-- [Introduction à la rétroingénierie de binaires](https://zestedesavoir.com/articles/97/introduction-a-la-retroingenierie-de-binaires/)
-- [Smash stack](http://insecure.org/stf/smashstack.html)
+- 🇬🇧 [Buffer Overflow EIP Offset String Generator](http://projects.jason-rush.com/tools/buffer-overflow-eip-offset-string-generator/)
+- 🇬🇧 [Smash stack](http://insecure.org/stf/smashstack.html)
+- 🇫🇷 [Introduction aux buffer overflows](https://zestedesavoir.com/articles/100/introduction-aux-buffer-overflows/)
+- 🇫🇷 [Introduction à la rétroingénierie de binaires](https://zestedesavoir.com/articles/97/introduction-a-la-retroingenierie-de-binaires/)
 
 ### Shell-codes
 
 - [Shellcodes database](http://shell-storm.org/shellcode/)
 
-## Installer peda
+## Tips
+
+### Python tips
+
+You can use `struct` to convert the integer number to a binary string easily.
+[Link](https://docs.python.org/2/library/struct.html).
+
+```python
+>>> import struct
+>>> struct.pack("I", 0x080483f4)
+'\xf4\x83\x04\x08'
+```
+
+### Setup peda
+
+You can use [GDB peda](https://github.com/longld/peda) to enhance your GDB.
 
 ```bash
 #!/bin/bash -e
