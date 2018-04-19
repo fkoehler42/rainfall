@@ -13,6 +13,11 @@
 
 ## Tips
 
+### Shellcodes
+
+If debugging shellcode, we can use `\xcc` (int3) to stop program and return to debugger. It's a breakpoint instruction
+(used by GDB).
+
 ### Python tips
 
 You can use `struct` to convert the integer number to a binary string easily.
