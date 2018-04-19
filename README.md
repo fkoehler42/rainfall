@@ -7,6 +7,10 @@
 - [Introduction à la rétroingénierie de binaires](https://zestedesavoir.com/articles/97/introduction-a-la-retroingenierie-de-binaires/)
 - [Smash stack](http://insecure.org/stf/smashstack.html)
 
+### Shell-codes
+
+- [Shellcodes database](http://shell-storm.org/shellcode/)
+
 ## Installer peda
 
 ```bash
