@@ -26,7 +26,7 @@ Dump of assembler code for function v:
    0x080484d5 <+49>:    call   0x8048390 <printf@plt>      ; call printf
    0x080484da <+54>:    mov    eax,ds:0x804988c            ; eax = data segment variable (that equals 0 here)
    0x080484df <+59>:    cmp    eax,0x40                    ; compare eax to 0x40 (64 in decimal)
-   0x080484e2 <+62>:    jne    0x8048518 <v+116>           ; jump to leave instruction
+   0x080484e2 <+62>:    jne    0x8048518 <v+116>           ; jump to leave instruction if not equal
    0x080484e4 <+64>:    mov    eax,ds:0x8049880            ; eax = stdout
    0x080484e9 <+69>:    mov    edx,eax                     ; edx = eax
    0x080484eb <+71>:    mov    eax,0x8048600               ; eax = 0x8048600 (contains "Wait what?!\n")
