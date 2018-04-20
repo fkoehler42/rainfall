@@ -14,14 +14,14 @@ gdb-peda$ disas v
 Dump of assembler code for function v:
    0x080484a4 <+0>:     push   ebp
    0x080484a5 <+1>:     mov    ebp,esp
-   0x080484a7 <+3>:     sub    esp,0x218                   ; 536 bytes of stack space
+   0x080484a7 <+3>:     sub    esp,0x218                   ; 536 bytes of stack space reclaimed
    0x080484ad <+9>:     mov    eax,ds:0x8049860            ; eax = stdin
    0x080484b2 <+14>:    mov    DWORD PTR [esp+0x8],eax     ; push stdin to stack
    0x080484b6 <+18>:    mov    DWORD PTR [esp+0x4],0x200   ; push 512 to stack
-   0x080484be <+26>:    lea    eax,[ebp-0x208]             ; load buf[0] in eax
+   0x080484be <+26>:    lea    eax,[ebp-0x208]             ; load buffer address in eax
    0x080484c4 <+32>:    mov    DWORD PTR [esp],eax         ; push eax to stack
    0x080484c7 <+35>:    call   0x80483a0 <fgets@plt>       ; call fgets
-   0x080484cc <+40>:    lea    eax,[ebp-0x208]             ; load buf[0] in eax
+   0x080484cc <+40>:    lea    eax,[ebp-0x208]             ; load buffer address in eax
    0x080484d2 <+46>:    mov    DWORD PTR [esp],eax         ; ebx = eax
    0x080484d5 <+49>:    call   0x8048390 <printf@plt>      ; call printf
    0x080484da <+54>:    mov    eax,ds:0x804988c            ; eax = data segment variable (that equals 0 here)
