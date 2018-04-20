@@ -22,7 +22,7 @@ Dump of assembler code for function v:
    0x080484c4 <+32>:    mov    DWORD PTR [esp],eax         ; push eax to stack
    0x080484c7 <+35>:    call   0x80483a0 <fgets@plt>       ; call fgets
    0x080484cc <+40>:    lea    eax,[ebp-0x208]             ; load buffer address in eax
-   0x080484d2 <+46>:    mov    DWORD PTR [esp],eax         ; ebx = eax
+   0x080484d2 <+46>:    mov    DWORD PTR [esp],eax         ; push eax to stack
    0x080484d5 <+49>:    call   0x8048390 <printf@plt>      ; call printf
    0x080484da <+54>:    mov    eax,ds:0x804988c            ; eax = data segment variable (that equals 0 here)
    0x080484df <+59>:    cmp    eax,0x40                    ; compare eax to 0x40 (64 in decimal)
