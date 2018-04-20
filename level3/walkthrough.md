@@ -35,7 +35,7 @@ Dump of assembler code for function v:
    0x080484fc <+88>:    mov    DWORD PTR [esp+0x4],0x1     ; push 1 to stack
    0x08048504 <+96>:    mov    DWORD PTR [esp],eax         ; push eax to stack (arg[0])
    0x08048507 <+99>:    call   0x80483b0 <fwrite@plt>      ; call fwrite
-   0x0804850c <+104>:   mov    DWORD PTR [esp],0x804860d   ; push 0x804860d content to stack
+   0x0804850c <+104>:   mov    DWORD PTR [esp],0x804860d   ; push address 0x804860d to stack
    0x08048513 <+111>:   call   0x80483c0 <system@plt>      ; call system
    0x08048518 <+116>:   leave
    0x08048519 <+117>:   ret
