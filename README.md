@@ -14,6 +14,11 @@
 
 ## Tips
 
+### Commands
+
+- `checksec --file your_binary` displays informations about the executable protections (relro, stack canary...).
+- `readelf -l your_elf_binary | grep GNU_STACK` displays the stack flags, useful to quickly know if you can execute some code from it.
+
 ### Shellcodes
 
 If debugging shellcode, we can use `\xcc` (int3) to stop program and return to debugger. It's a breakpoint instruction
