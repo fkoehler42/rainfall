@@ -12,7 +12,7 @@ void	n() {
 
 	fgets(buf, 512, stdin);
 	p(buf);
-	if (to_override == ???) {
+	if (to_override == 16930116) {
 		system("/bin/cat /home/user/level5/.pass");
 	}
 }
