@@ -67,23 +67,23 @@ Dump of assembler code for function p:
    0x080484d7 <+3>:     sub    esp,0x68
    0x080484da <+6>:     mov    eax,ds:0x8049860
    0x080484df <+11>:    mov    DWORD PTR [esp],eax
-   0x080484e2 <+14>:    call   0x80483b0 <fflush@plt>       ; Flush the stdout.
-   0x080484e7 <+19>:    lea    eax,[ebp-0x4c]               ; eax = ebp - 76 bytes.
-   0x080484ea <+22>:    mov    DWORD PTR [esp],eax          ; *esp = eax.
-   0x080484ed <+25>:    call   0x80483c0 <gets@plt>         ; Call `gets`.
-   0x080484f2 <+30>:    mov    eax,DWORD PTR [ebp+0x4]      ; Put eip in eax.
-   0x080484f5 <+33>:    mov    DWORD PTR [ebp-0xc],eax      ; Put eip at ebp-0xc.
-   0x080484f8 <+36>:    mov    eax,DWORD PTR [ebp-0xc]      ; Move eip in eax again.
-   0x080484fb <+39>:    and    eax,0xb0000000               ; eip & 0xb0000000 is a filter.
-   0x08048500 <+44>:    cmp    eax,0xb0000000               ; Is eax != 0xb0000000?
-   0x08048505 <+49>:    jne    0x8048527 <p+83>             ; Yes: jump to <p+83>.
+   0x080484e2 <+14>:    call   0x80483b0 <fflush@plt>       ; flush the stdout
+   0x080484e7 <+19>:    lea    eax,[ebp-0x4c]               ; eax = ebp - 76 bytes
+   0x080484ea <+22>:    mov    DWORD PTR [esp],eax          ; *esp = eax
+   0x080484ed <+25>:    call   0x80483c0 <gets@plt>         ; call `gets`
+   0x080484f2 <+30>:    mov    eax,DWORD PTR [ebp+0x4]      ; put eip in eax
+   0x080484f5 <+33>:    mov    DWORD PTR [ebp-0xc],eax      ; put eip at ebp-0xc
+   0x080484f8 <+36>:    mov    eax,DWORD PTR [ebp-0xc]      ; move eip in eax again
+   0x080484fb <+39>:    and    eax,0xb0000000               ; eip & 0xb0000000 is a filter
+   0x08048500 <+44>:    cmp    eax,0xb0000000               ; ss eax != 0xb0000000?
+   0x08048505 <+49>:    jne    0x8048527 <p+83>             ; yes: jump to <p+83>
    0x08048507 <+51>:    mov    eax,0x8048620
-   0x0804850c <+56>:    mov    edx,DWORD PTR [ebp-0xc]      ; edx = eip (formerly at ebp-0xc).
-   0x0804850f <+59>:    mov    DWORD PTR [esp+0x4],edx      ; Put eip on stack at esp+0x4.
-   0x08048513 <+63>:    mov    DWORD PTR [esp],eax          ; Put eax on stack at esp.
-   0x08048516 <+66>:    call   0x80483a0 <printf@plt>       ; Call printf with parameters put on stack.
-   0x0804851b <+71>:    mov    DWORD PTR [esp],0x1          ; Put 0x1 on stack at esp.
-   0x08048522 <+78>:    call   0x80483d0 <_exit@plt>        ; Call exit, that is to say exit(1).
+   0x0804850c <+56>:    mov    edx,DWORD PTR [ebp-0xc]      ; edx = eip (formerly at ebp-0xc)
+   0x0804850f <+59>:    mov    DWORD PTR [esp+0x4],edx      ; put eip on stack at esp+0x4
+   0x08048513 <+63>:    mov    DWORD PTR [esp],eax          ; put eax on stack at esp
+   0x08048516 <+66>:    call   0x80483a0 <printf@plt>       ; call printf with parameters put on stack
+   0x0804851b <+71>:    mov    DWORD PTR [esp],0x1          ; put 0x1 on stack at esp
+   0x08048522 <+78>:    call   0x80483d0 <_exit@plt>        ; call exit, that is to say exit(1)
    0x08048527 <+83>:    lea    eax,[ebp-0x4c]
    0x0804852a <+86>:    mov    DWORD PTR [esp],eax
    0x0804852d <+89>:    call   0x80483f0 <puts@plt>
