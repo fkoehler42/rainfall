@@ -54,15 +54,15 @@ level5@RainFall:~$ objdump -TR level5
 level5:     file format elf32-i386
 
 DYNAMIC SYMBOL TABLE:
-00000000      DF *UND*	00000000  GLIBC_2.0   printf
-00000000      DF *UND*	00000000  GLIBC_2.0   _exit
-00000000      DF *UND*	00000000  GLIBC_2.0   fgets
-00000000      DF *UND*	00000000  GLIBC_2.0   system
-00000000  w   D  *UND*	00000000              __gmon_start__
-00000000      DF *UND*	00000000  GLIBC_2.0   exit
-00000000      DF *UND*	00000000  GLIBC_2.0   __libc_start_main
-080485ec g    DO .rodata	00000004  Base        _IO_stdin_used
-08049848 g    DO .bss	00000004  GLIBC_2.0   stdin
+00000000      DF *UND*   00000000  GLIBC_2.0   printf
+00000000      DF *UND*   00000000  GLIBC_2.0   _exit
+00000000      DF *UND*   00000000  GLIBC_2.0   fgets
+00000000      DF *UND*   00000000  GLIBC_2.0   system
+00000000  w   D  *UND*   00000000              __gmon_start__
+00000000      DF *UND*   00000000  GLIBC_2.0   exit
+00000000      DF *UND*   00000000  GLIBC_2.0   __libc_start_main
+080485ec g    DO .rodata 00000004  Base    _IO_stdin_used
+08049848 g    DO .bss    00000004  GLIBC_2.0   stdin
 
 
 DYNAMIC RELOCATION RECORDS

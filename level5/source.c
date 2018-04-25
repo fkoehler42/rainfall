@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 void	o() {
 	char	str[] = "/bin/sh";
 
 	system(str);
-	exit(1);
+	_exit(1);
 }
 
 void	n() {
