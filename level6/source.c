@@ -2,6 +2,14 @@
 #include <string.h>
 #include <stdio.h>
 
+struct		s_str {
+	char	str[64];
+};
+
+struct		s_fptr {
+	void	(*fptr)();
+};
+
 void	n() {
 	system("/bin/cat /home/user/level7/.pass");
 }
@@ -11,10 +19,13 @@ void	m() {
 }
 
 int		main(int ac, char **av) {
-	void	*ptr1 = malloc(64);
-	void	*ptr2 = malloc(4);
+	struct s_str	*str_struct;
+	struct s_fptr	*fptr_struct;
+	
+	str_struct = malloc(sizeof(*str_struct));
+	fptr_struct = malloc(sizeof(*fptr_struct));
 
-	ptr2 = &m;
-	??? = av[1];
-	strcpy(dst, src);
+	fptr_struct->fptr = &m;
+	strcpy(str_struct->str, av[1]);
+	fptr_struct->fptr();
 }

