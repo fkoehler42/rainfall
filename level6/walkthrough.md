@@ -26,9 +26,9 @@ Dump of assembler code for function main:
    0x080484aa <+46>:    mov    eax,DWORD PTR [esp+0x18]     ; load pointer at [esp+0x18] (malloc(4)) into eax
    0x080484ae <+50>:    mov    DWORD PTR [eax],edx          ; mov edx (<m>) into stack pointed by eax
    0x080484b0 <+52>:    mov    eax,DWORD PTR [ebp+0xc]      ; load address [ebp+12] into eax
-   0x080484b3 <+55>:    add    eax,0x4                      ; [ebp+12] + 4
-   0x080484b6 <+58>:    mov    eax,DWORD PTR [eax]          ; 
-   0x080484b8 <+60>:    mov    edx,eax
+   0x080484b3 <+55>:    add    eax,0x4                      ; [ebp+12] + 4: seems to be argv[1]
+   0x080484b6 <+58>:    mov    eax,DWORD PTR [eax]          ; load argv[1] into eax
+   0x080484b8 <+60>:    mov    edx,eax                      ; load argv[1] into edx
    0x080484ba <+62>:    mov    eax,DWORD PTR [esp+0x1c]     ; load [esp+0x1c] (malloc(64)) into eax
    0x080484be <+66>:    mov    DWORD PTR [esp+0x4],edx      ; arg2 = argv[1]
    0x080484c2 <+70>:    mov    DWORD PTR [esp],eax          ; arg1 = pointer malloc(64)
