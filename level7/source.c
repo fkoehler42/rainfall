@@ -1,11 +1,19 @@
-#include<string.h>
-#include<stdlib.h>
-#include<stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <time.h>
 
 struct		s_struct {
 	int		priority;
 	char	*str;
 };
+
+char		db_tilde[] = "~~";
+char		buf[68];
+
+void		m() {
+	printf("%s - %d\n", buf, (int)time(NULL));
+}
 
 int			main(int ac, char **av) {
 	struct s_struct	*first, *second, *third;
@@ -23,7 +31,7 @@ int			main(int ac, char **av) {
 	strcpy(second->str, av[2]);
 
 	fs = fopen("/home/user/level8/.pass", "r");
-	fgets(buf, fs);
-	fputs(buf);
+	fgets(buf, 68, fs);
+	puts(db_tilde);
 	return (0);
 }
