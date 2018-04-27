@@ -2,11 +2,16 @@
 
 ## Ressources
 
-- 🇬🇧 [Buffer Overflow EIP Offset String Generator](http://projects.jason-rush.com/tools/buffer-overflow-eip-offset-string-generator/)
+- 🇬🇧 [Some useful online tools](https://defuse.ca/) - [This](https://defuse.ca/online-x86-assembler.htm) can help you
+  create shellcode.
+- 🇬🇧 [Buffer Overflow EIP Offset String
+  Generator](http://projects.jason-rush.com/tools/buffer-overflow-eip-offset-string-generator/)
 - 🇬🇧 [Smash stack](http://insecure.org/stf/smashstack.html)
 - 🇫🇷 [Introduction aux buffer overflows](https://zestedesavoir.com/articles/100/introduction-aux-buffer-overflows/)
-- 🇫🇷 [Introduction à la rétroingénierie de binaires](https://zestedesavoir.com/articles/97/introduction-a-la-retroingenierie-de-binaires/)
-- 🇫🇷 [Écrivez votre premier shellcode en asm x86 !](https://zestedesavoir.com/articles/158/ecrivez-votre-premier-shellcode-en-asm-x86/)
+- 🇫🇷 [Introduction à la rétroingénierie de
+  binaires](https://zestedesavoir.com/articles/97/introduction-a-la-retroingenierie-de-binaires/)
+- 🇫🇷 [Écrivez votre premier shellcode en asm x86
+  !](https://zestedesavoir.com/articles/158/ecrivez-votre-premier-shellcode-en-asm-x86/)
 
 ### Shell-codes
 
@@ -17,7 +22,8 @@
 ### Commands
 
 - `checksec --file your_binary` displays informations about the executable protections (relro, stack canary...).
-- `readelf -l your_elf_binary | grep GNU_STACK` displays the stack flags, useful to quickly know if you can execute some code from it.
+- `readelf -l your_elf_binary | grep GNU_STACK` displays the stack flags, useful to quickly know if you can execute some
+  code from it.
 
 ### Shellcodes
 
