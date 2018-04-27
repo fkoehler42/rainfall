@@ -8,7 +8,6 @@ struct		s_struct {
 	char	*str;
 };
 
-char		db_tilde[] = "~~";
 char		buf[68];
 
 void		m() {
@@ -32,6 +31,6 @@ int			main(int ac, char **av) {
 
 	fs = fopen("/home/user/level8/.pass", "r");
 	fgets(buf, 68, fs);
-	puts(db_tilde);
+	puts("~~");
 	return (0);
 }
