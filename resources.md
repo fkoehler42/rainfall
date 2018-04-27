@@ -27,3 +27,7 @@ Some links about hacking.
 ## Heap exploit
 
 - [Exploiting the heap](https://www.win.tue.nl/~aeb/linux/hh/hh-11.html)
+
+## Use after free
+
+- [Use after free](https://sploitfun.wordpress.com/2015/06/16/use-after-free/)
