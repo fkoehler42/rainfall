@@ -18,24 +18,24 @@ Dump of assembler code for function main:
    0x0804856c <+8>:     sub    esp,0xa0
    0x08048572 <+14>:    jmp    0x8048575 <main+17>
    0x08048574 <+16>:    nop
-   0x08048575 <+17>:    mov    ecx,DWORD PTR ds:0x8049ab0
-   0x0804857b <+23>:    mov    edx,DWORD PTR ds:0x8049aac
-   0x08048581 <+29>:    mov    eax,0x8048810
-   0x08048586 <+34>:    mov    DWORD PTR [esp+0x8],ecx
-   0x0804858a <+38>:    mov    DWORD PTR [esp+0x4],edx
-   0x0804858e <+42>:    mov    DWORD PTR [esp],eax
-   0x08048591 <+45>:    call   0x8048410 <printf@plt>
-   0x08048596 <+50>:    mov    eax,ds:0x8049a80
-   0x0804859b <+55>:    mov    DWORD PTR [esp+0x8],eax
-   0x0804859f <+59>:    mov    DWORD PTR [esp+0x4],0x80
-   0x080485a7 <+67>:    lea    eax,[esp+0x20]
-   0x080485ab <+71>:    mov    DWORD PTR [esp],eax
-   0x080485ae <+74>:    call   0x8048440 <fgets@plt>
-   0x080485b3 <+79>:    test   eax,eax
-   0x080485b5 <+81>:    je     0x804872c <main+456>
-   0x080485bb <+87>:    lea    eax,[esp+0x20]
-   0x080485bf <+91>:    mov    edx,eax
-   0x080485c1 <+93>:    mov    eax,0x8048819
+   0x08048575 <+17>:    mov    ecx,DWORD PTR ds:0x8049ab0               ; ecx = data variable 'service' address
+   0x0804857b <+23>:    mov    edx,DWORD PTR ds:0x8049aac               ; edx = data variable 'auth' address
+   0x08048581 <+29>:    mov    eax,0x8048810                            ; eax = text section address ("%p, %p \n")
+   0x08048586 <+34>:    mov    DWORD PTR [esp+0x8],ecx                  ; load 3rd printf arg from ecx
+   0x0804858a <+38>:    mov    DWORD PTR [esp+0x4],edx                  ; load 2nd printf arg from edx
+   0x0804858e <+42>:    mov    DWORD PTR [esp],eax                      ; load 1st printf arg from eax
+   0x08048591 <+45>:    call   0x8048410 <printf@plt>                   ; printf("%p, %p \n", auth address, service address)
+   0x08048596 <+50>:    mov    eax,ds:0x8049a80                         ; eax = stdin
+   0x0804859b <+55>:    mov    DWORD PTR [esp+0x8],eax                  ; load fgets 3rd arg from eax
+   0x0804859f <+59>:    mov    DWORD PTR [esp+0x4],0x80                 ; load fgets 2nd arg (128)
+   0x080485a7 <+67>:    lea    eax,[esp+0x20]                           ; eax = variable on stack (buffer)
+   0x080485ab <+71>:    mov    DWORD PTR [esp],eax                      ; load fgets 1st arg from eax
+   0x080485ae <+74>:    call   0x8048440 <fgets@plt>                    ; fgets(buffer, 128, stdin)
+   0x080485b3 <+79>:    test   eax,eax                                  ; check fgets return value
+   0x080485b5 <+81>:    je     0x804872c <main+456>                     ; if zero jump to the end of the function
+   0x080485bb <+87>:    lea    eax,[esp+0x20]                           ; eax = buffer
+   0x080485bf <+91>:    mov    edx,eax                                  ; edx = eax
+   0x080485c1 <+93>:    mov    eax,0x8048819                            ; eax = 'auth' address
    0x080485c6 <+98>:    mov    ecx,0x5
    0x080485cb <+103>:   mov    esi,edx
    0x080485cd <+105>:   mov    edi,eax
