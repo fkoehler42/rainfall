@@ -6,6 +6,7 @@ Some links about hacking.
   [Youtube channel](https://www.youtube.com/channel/UClcE-kVhqyiHCcjYwcpfj9w) too.
 - [Hackndo](http://beta.hackndo.com/) - A french blog about hacking with a lot of beginner tutorial.
 - [Phrack](http://phrack.org/) - A lot of history about exploits.
+- [0x00sec](https://0x00sec.org/)
 
 ## Buffer overflow
 
