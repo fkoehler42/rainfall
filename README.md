@@ -41,6 +41,13 @@ You can use `struct` to convert the integer number to a binary string easily.
 '\xf4\x83\x04\x08'
 ```
 
+Generate easily a string like `AAAABBBBCCCC...` (the full length is `104`):
+
+```python
+>>> "".join(x for x in string.ascii_uppercase for _ in range(4))
+'AAAABBBBCCCCDDDDEEEEFFFFGGGGHHHHIIIIJJJJKKKKLLLLMMMMNNNNOOOOPPPPQQQQRRRRSSSSTTTTUUUUVVVVWWWWXXXXYYYYZZZZ'
+```
+
 ### Setup peda
 
 You can use [GDB peda](https://github.com/longld/peda) to enhance your GDB.

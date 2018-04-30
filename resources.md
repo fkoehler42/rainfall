@@ -7,6 +7,9 @@ Some links about hacking.
 - [Hackndo](http://beta.hackndo.com/) - A french blog about hacking with a lot of beginner tutorial.
 - [Phrack](http://phrack.org/) - A lot of history about exploits.
 - [0x00sec](https://0x00sec.org/)
+- [Python love gdb](https://repo.zenk-security.com/Reversing%20.%20cracking/Hi%20GDB,%20this%20is%20python.pdf) - Use
+  Python with GDB
+- 🇫🇷 [Tutoriels de hacking](http://shoxx-website.com/category/hacking/exploit)
 
 ## Buffer overflow
 
