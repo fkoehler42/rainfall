@@ -19,15 +19,15 @@ Dump of assembler code for function main:
    0x08048602 <+14>:    jg     0x8048610 <main+28>                  ; if so jump to <main+28>
    0x08048604 <+16>:    mov    DWORD PTR [esp],0x1                  ; else load 1 into pointed value by esp
    0x0804860b <+23>:    call   0x80484f0 <_exit@plt>                ; call exit(1)
-   0x08048610 <+28>:    mov    DWORD PTR [esp],0x6c                 ; put 0x6c (108 or 'l') into address pointed by esp (previously it seems to contains a 0x2)
-   0x08048617 <+35>:    call   0x8048530 <_Znwj@plt>                ; call <_Znwj@plt>
+   0x08048610 <+28>:    mov    DWORD PTR [esp],0x6c                 ; put 0x6c (108) into address pointed by esp (previously it seems to contains a 0x2)
+   0x08048617 <+35>:    call   0x8048530 <_Znwj@plt>                ; call <_Znwj@plt> (operator new)
    0x0804861c <+40>:    mov    ebx,eax                              ; save eax (return of <_Znwj@plt>) into ebx
    0x0804861e <+42>:    mov    DWORD PTR [esp+0x4],0x5              ; put 0x5 into the address pointed by esp+0x4
    0x08048626 <+50>:    mov    DWORD PTR [esp],ebx                  ; mov ebx on top of stack (esp)
    0x08048629 <+53>:    call   0x80486f6 <_ZN1NC2Ei>                ; call <_ZN1NC2Ei>
    0x0804862e <+58>:    mov    DWORD PTR [esp+0x1c],ebx             ; put ebx on the stack
-   0x08048632 <+62>:    mov    DWORD PTR [esp],0x6c                 ; 
-   0x08048639 <+69>:    call   0x8048530 <_Znwj@plt>                ; 
+   0x08048632 <+62>:    mov    DWORD PTR [esp],0x6c                 ; put 0x6c (108) into address pointed by esp
+   0x08048639 <+69>:    call   0x8048530 <_Znwj@plt>                ; call <_Znwj@plt> (operator new)
    0x0804863e <+74>:    mov    ebx,eax                              ;
    0x08048640 <+76>:    mov    DWORD PTR [esp+0x4],0x6              ;
    0x08048648 <+84>:    mov    DWORD PTR [esp],ebx                  ;
