@@ -2,8 +2,6 @@
 #include <unistd.h>
 #include <string.h>
 
-char	hyphen[] = " - ";
-
 void	p(char *buf, char *str) {
 	puts(str);
 	read(0, buf, 4096);
@@ -12,8 +10,10 @@ void	p(char *buf, char *str) {
 }
 
 void	pp(char *buf1) {
+	char	hyphen[] = " - ";
+	
 	p(buf1, hyphen);
-	p(buf1, hyphen);
+	p(buf1 + 20, hyphen);
 	strcpy();
 	strcat();
 }
