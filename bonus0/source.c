@@ -2,20 +2,26 @@
 #include <unistd.h>
 #include <string.h>
 
-void	p(char *buf, char *str) {
-	puts(str);
-	read(0, buf, 4096);
-	strchr(buf, '\n');
-	strncpy(buf, buf, 20);
+void	p(char *tmp_buf, char *hyphen) {
+	char	read_buf[4096];
+
+	puts(hyphen);
+	read(0, read_buf, 4096);
+	*(strchr(read_buf, '\n')) = '\0';
+	strncpy(tmp_buf, read_buf, 20);
 }
 
 void	pp(char *buf1) {
 	char	hyphen[] = " - ";
+	char	buf2[20];
+	char	buf3[20];
 	
-	p(buf1, hyphen);
-	p(buf1 + 20, hyphen);
-	strcpy();
-	strcat();
+	p(buf2, hyphen);
+	p(buf3, hyphen);
+	strcpy(buf1, buf2);
+	while (buf1++);
+	*buf1 = ' ';
+	strcat(buf1, buf3);
 }
 
 int		main() {
