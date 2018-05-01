@@ -10,6 +10,15 @@ Some links about hacking.
 - [Python love gdb](https://repo.zenk-security.com/Reversing%20.%20cracking/Hi%20GDB,%20this%20is%20python.pdf) - Use
   Python with GDB
 - 🇫🇷 [Tutoriels de hacking](http://shoxx-website.com/category/hacking/exploit)
+- [Reboot User](https://www.rebootuser.com/)
+
+### Where to find exploits?
+
+- [Exploit Database](https://www.exploit-db.com/)
+- [SecuriTeam](http://www.securiteam.com/)
+- [Another Exploti Database](https://www.rapid7.com/db/modules/)
+- [CX Security](https://cxsecurity.com/)
+- [SecLists](http://seclists.org/fulldisclosure/)
 
 ## Buffer overflow
 
@@ -35,3 +44,7 @@ Some links about hacking.
 ## Use after free
 
 - [Use after free](https://sploitfun.wordpress.com/2015/06/16/use-after-free/)
+
+## Privileges escalation
+
+- [Basic Linux Escalation](http://blog.g0tmi1k.com/2011/08/basic-linux-privilege-escalation/)
