@@ -11,14 +11,14 @@ Dump of assembler code for function main:
    0x080485a4 <+0>:     push   ebp
    0x080485a5 <+1>:     mov    ebp,esp
    0x080485a7 <+3>:     and    esp,0xfffffff0
-   0x080485aa <+6>:     sub    esp,0x40
-   0x080485ad <+9>:     lea    eax,[esp+0x16]
-   0x080485b1 <+13>:    mov    DWORD PTR [esp],eax
-   0x080485b4 <+16>:    call   0x804851e <pp>
-   0x080485b9 <+21>:    lea    eax,[esp+0x16]
-   0x080485bd <+25>:    mov    DWORD PTR [esp],eax
-   0x080485c0 <+28>:    call   0x80483b0 <puts@plt>
-   0x080485c5 <+33>:    mov    eax,0x0
+   0x080485aa <+6>:     sub    esp,0x40                             ; add 64 bytes of stack space
+   0x080485ad <+9>:     lea    eax,[esp+0x16]                       ; eax = buffer address
+   0x080485b1 <+13>:    mov    DWORD PTR [esp],eax                  ; load 1st arg of <pp> (buffer)
+   0x080485b4 <+16>:    call   0x804851e <pp>                       ; pp(buffer)
+   0x080485b9 <+21>:    lea    eax,[esp+0x16]                       ; eax = buffer address
+   0x080485bd <+25>:    mov    DWORD PTR [esp],eax                  ; load 1st arg of <puts> (buffer)
+   0x080485c0 <+28>:    call   0x80483b0 <puts@plt>                 ; puts(buffer)
+   0x080485c5 <+33>:    mov    eax,0x0                              ; eax = 0 (function return value)
    0x080485ca <+38>:    leave
    0x080485cb <+39>:    ret
 End of assembler dump.
@@ -31,13 +31,13 @@ Dump of assembler code for function pp:
    0x0804851f <+1>:      mov    ebp,esp
    0x08048521 <+3>:      push   edi
    0x08048522 <+4>:      push   ebx
-   0x08048523 <+5>:      sub    esp,0x50
-   0x08048526 <+8>:      mov    DWORD PTR [esp+0x4],0x80486a0
-   0x0804852e <+16>:     lea    eax,[ebp-0x30]
-   0x08048531 <+19>:     mov    DWORD PTR [esp],eax
-   0x08048534 <+22>:     call   0x80484b4 <p>
-   0x08048539 <+27>:     mov    DWORD PTR [esp+0x4],0x80486a0
-   0x08048541 <+35>:     lea    eax,[ebp-0x1c]
+   0x08048523 <+5>:      sub    esp,0x50                            ; add 80 bytes of stack space
+   0x08048526 <+8>:      mov    DWORD PTR [esp+0x4],0x80486a0       ; load 2nd arg of <p> (" - ")
+   0x0804852e <+16>:     lea    eax,[ebp-0x30]                      ; eax = buffer from main
+   0x08048531 <+19>:     mov    DWORD PTR [esp],eax                 ; load 1st arg of <p> (buffer)
+   0x08048534 <+22>:     call   0x80484b4 <p>                       ; p(buffer, " - ")
+   0x08048539 <+27>:     mov    DWORD PTR [esp+0x4],0x80486a0       ; load 2nd arg of <p> (" - ")
+   0x08048541 <+35>:     lea    eax,[ebp-0x1c]                      ; eax = buffer + 20
    0x08048544 <+38>:     mov    DWORD PTR [esp],eax
    0x08048547 <+41>:     call   0x80484b4 <p>
    0x0804854c <+46>:     lea    eax,[ebp-0x30]
@@ -45,7 +45,7 @@ Dump of assembler code for function pp:
    0x08048553 <+53>:     mov    eax,DWORD PTR [ebp+0x8]
    0x08048556 <+56>:     mov    DWORD PTR [esp],eax
    0x08048559 <+59>:     call   0x80483a0 <strcpy@plt>
-   0x0804855e <+64>:     mov    ebx,0x80486a4						; ebx = 0x80486a4 (' ')
+   0x0804855e <+64>:     mov    ebx,0x80486a4                       ; ebx = 0x80486a4 (' ')
    0x08048563 <+69>:     mov    eax,DWORD PTR [ebp+0x8]
    0x08048566 <+72>:     mov    DWORD PTR [ebp-0x3c],0xffffffff
    0x0804856d <+79>:     mov    edx,eax
