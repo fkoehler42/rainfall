@@ -19,8 +19,9 @@ void	pp(char *buf1) {
 	p(buf2, hyphen);
 	p(buf3, hyphen);
 	strcpy(buf1, buf2);
-	while (buf1++);
+	buf1 += strlen(buf1);
 	*buf1 = ' ';
+	buf1++;
 	strcat(buf1, buf3);
 }
 
