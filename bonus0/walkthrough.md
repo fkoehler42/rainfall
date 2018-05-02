@@ -162,7 +162,7 @@ SHELLCODE=ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï
                                                                           Í€ï¿½ï¿½ï¿½ï¿½ï¿½/bin/sh
 ```
 
-Finally, we look for the address where our variable is stored inside the `main`. To do so, [GDB peda](https://github.com/longld/peda) is very useful, since it displays the top of the stack in a human readable form.
+Finally, we look for the address where our variable is stored. To do so, [GDB peda](https://github.com/longld/peda) is very useful, since it displays the top of the stack in a human readable form.
 
 ```gdb
 bonus0@RainFall:~$ gdb ./bonus0
