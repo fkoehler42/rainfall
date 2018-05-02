@@ -11,6 +11,7 @@ Some links about hacking.
   Python with GDB
 - 🇫🇷 [Tutoriels de hacking](http://shoxx-website.com/category/hacking/exploit)
 - [Reboot User](https://www.rebootuser.com/)
+- [Awesome Hacking Resources](https://github.com/vitalysim/Awesome-Hacking-Resources)
 
 ### Where to find exploits?
 
