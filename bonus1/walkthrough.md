@@ -49,13 +49,52 @@ End of assembler dump.
 
 `bonus1` take _two_ arguments:
 
-- The first is an `int` because `bonus1` does an `atoi` and then compares if it is less or equal at 9. If so, it returns
-  with `1`.
+- The first is an _signed_ `int` because of `atoi`.
 - The second is a string which is copied by `memcpy` to a buffer on the stack.
 
-After copy, it compares the first argument to `0x574f4c46` (`1464814662`). If it is not equal, it terminates. The
-principle is simple: we are going to take the `INT MIN` (`-2**31`) and add the value of our offset. We exploit the
-weakness that `atoi` take an `int` but `memcpy` take a `size_t`, which we can assume is act like an `uint`.
+We are going to exploit the fact that `memcpy` use `size_t` (an unsigned integer) and the first argument is a signed
+integer: it is an _integer overflow_.
+
+We need to find a `int` that is less than 9 (`<main+34>`). Then, this `int` is used for `memcpy` size but it is
+multiplied by 4 before it uses it. Finally the same `int` returned by `atoi` is compared to `0x574f4c46`, which is a big
+positive value... It seems to be difficult to find a value that is less than 9 and equal to 1464814662 (`0x574f4c46`).
+
+That is without counting on integer overflow. This integer overflow will lead us to a buffer overflow by `memcpy`
+because the `int` value returned by `atoi` is stored next to the buffer. So we are going to crush its value.
+
+In `Resources`, we have a small C program to visualize an number as signed, unsigned and hexadecimal values.
+
+Let's find how big is the buffer for `memcpy`:
+
+```gdb
+   0x0804843d <+25>:    mov    DWORD PTR [esp+0x3c],eax
+```
+
+Here, `atoi` return is stored at `esp+0x3c`.
+
+```gdb
+   0x08048464 <+64>:    lea    eax,[esp+0x14]
+```
+
+Before `memcpy` call, we notice that the buffer begins at `esp+0x3c`. Thus the total size of the buffer seems to be
+`0x3c - 0x14` that is to say `40`. Consequently, the `int` value we are targetting is at 41th, 42th, 43th and 44th
+bytes. So we know that the second argument is going to be something like `python -c 'print "A" * 40 +
+"\x46\x4c\x4f\x57"`.
+
+Let's find the integer trick for the first argument. We take the minimal signed integer and add 11 (because the buffer
+is 4 times 11). Let's simulate how it is going to work inside the function:
+
+```python
+>>> -2**31 + 11         ; Take the INT_MIN and add (buffer_size / 4)                                                    
+-2147483637                                                                                                             
+>>> hex(2147483659 * 4) ; This value in hexadecimal is multiplied by 4                                                  
+'0x20000002c'           ; It gives us 0x20000002c which corresponds to 0x0000002c in unsigned int                       
+>>> 0x2c                                                                                                                
+44                      ; Which is equal to 44                                                                          
+```
+
+Thus the `size_t` value in `memcpy` is going to be `0x2c` (`44`). It overrides previous the first argument on the stack
+by `0x574f4c46`. Win!
 
 ```
 bonus1@RainFall:~$ ./bonus1 -1073741813 $(python -c 'print "A" * 40 + "\x46\x4c\x4f\x57"')
