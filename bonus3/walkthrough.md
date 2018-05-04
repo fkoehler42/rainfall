@@ -1,6 +1,4 @@
-# levelx
-
-> Some preliminaries: if we need to install something or use something specific.
+# bonus3
 
 1. [Analysis](#analysis)
 2. [Exploit](#exploit)
@@ -31,7 +29,7 @@ Dump of assembler code for function main:
    0x08048533 <+63>:    cmp    DWORD PTR [esp+0x9c],0x0         ;                                                     ⎤ 
    0x0804853b <+71>:    je     0x8048543 <main+79>              ; if esp+0x9c == 0: jump to <main+79>                 ⎦ 
    0x0804853d <+73>:    cmp    DWORD PTR [ebp+0x8],0x2          ;                                                       
-   0x08048541 <+77>:    je     0x804854d <main+89>              ; if arg[1] == 2: jump to <main+89>                     
+   0x08048541 <+77>:    je     0x804854d <main+89>              ; if argc == 2: jump to <main+89>                       
    0x08048543 <+79>:    mov    eax,0xffffffff                   ; eax = INT_MAX                                         
    0x08048548 <+84>:    jmp    0x8048615 <main+289>             ; jump to the end <main+289>                            
    0x0804854d <+89>:    lea    eax,[esp+0x18]                   ;                                                       
