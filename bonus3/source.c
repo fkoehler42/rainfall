@@ -1,4 +1,7 @@
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 int			main(int argc, char **argv)
 {
@@ -12,14 +15,10 @@ int			main(int argc, char **argv)
 		buf[66] = '\0';
 		int a = atoi(argv[1]);
 		buf[a] = '\0';
-		// buf += a;
-		// *buf = '\0';
 		fread(buf + 66, 1, 65, fs);
 		fclose(fs);
 		if (strcmp(buf, argv[1]) == 0)
-		{
 			execl("/bin/sh" , "sh", NULL);
-		}
 		puts(buf + 66);
 	}
 	else
