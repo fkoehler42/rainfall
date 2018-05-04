@@ -9,8 +9,11 @@ int			main(int argc, char **argv)
 	if (fs != 0 && argc == 2)
 	{
 		fread(buf, 1, 66, fs);
+		buf[66] = '\0';
 		int a = atoi(argv[1]);
-		buf[a + 1] = '\0';
+		buf[a] = '\0';
+		// buf += a;
+		// *buf = '\0';
 		fread(buf + 66, 1, 65, fs);
 		fclose(fs);
 		if (strcmp(buf, argv[1]) == 0)
