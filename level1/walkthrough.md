@@ -15,8 +15,7 @@ ashaiuhsoiahsioahisoaoishoiasioahsoiaoisnaoinsoiansoiansoinaiosnaoinsoihfoahsoin
 Segmentation fault (core dumped)
 ```
 
-Putting a lot of crap makes `level1` segfaulting that is to say it is not protected somewhere. Let's check what is
-inside this binary `level1`:
+Putting a lot of crap makes `level1` segfaulting that is to say it is not protected somewhere. Let's check what is inside this binary :
 
 ```gdb
 level1@RainFall:~$ gdb level1
@@ -96,7 +95,7 @@ we are going to use one famous hacker technic: the *buffer overflow*.
 
 ## Exploit
 
-In order to do so we are going to use the buffer initialize in `main`. The objectives are clear: thanks to `gets` we can
+In order to do so we are going to use the buffer initialized in `main`. The objectives are clear: thanks to `gets` we can
 buffer overflow the `main` function and put afterwards a call to `run` (which starts at `0x08048444`).
 
 To do so, we need to calculate the offset in order to override the `EIP` address. We are going to make it point to `run`
