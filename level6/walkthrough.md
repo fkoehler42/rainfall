@@ -75,7 +75,7 @@ The use of `strcpy`, which does not check the source string length, to write ins
 
 ## Exploit
 
-The argument we send must be long enough to fill in the 64 bytes allocated by the first `malloc` allocation plus the 8 bytes of block metadata. The 4th next bytes, corresponding to the second `malloc` allocation, must be replaced with the address of `n` function (0x08048468).
+The argument we send must be long enough to fill in the 64 bytes allocated by the first `malloc` call, plus the 8 bytes of block metadata. The 4th next bytes, corresponding to the second `malloc` allocation, must be replaced with the address of `n` function (0x08048468).
 
 ```console
 level6@RainFall:~$ ./level6 `python -c 'print "A"*72 + "\x54\x84\x04\x08"'`
