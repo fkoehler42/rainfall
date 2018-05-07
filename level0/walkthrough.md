@@ -10,16 +10,15 @@
 We first look at the level0 executable which belongs to level1 user (setuid bit active) and we run it.
 
 ```console
-./level0
+level0@RainFall:~$ ./level0
 Segmentation fault (core dumped)
-```
- 
-```console
-./level0 toto
+level0@RainFall:~$ ./level0 toto
 No !
 ```
 
-We use gdb to disassemble the binary and rewrite the source code in C language.
+It seems like the executable expects to receive an argument to work properly.
+
+We use gdb to disassemble it and rewrite the source code in C language.
 
 ```gdb
 gdb-peda$ disas main
@@ -59,7 +58,7 @@ Dump of assembler code for function main:
    0x08048f3d <+125>:    call   0x8054690 <setresuid>           ; setresuid(euid, euid, euid)
    0x08048f42 <+130>:    lea    eax,[esp+0x10]                  ; eax = sh_path variable (from strdup)
    0x08048f46 <+134>:    mov    DWORD PTR [esp+0x4],eax         ; push <execv> 2nd arg (sh_path)
-   0x08048f4a <+138>:    mov    DWORD PTR [esp],0x80c5348       ; push <execv> 1st arg ("/bin/sh")
+   0x08048f4a <+138>:    mov    DWORD PTR [esp],0x80c5348       ; push <execv> 1st arg (sh_path address)
    0x08048f51 <+145>:    call   0x8054640 <execv>               ; execv("/bin/sh", sh_path)
    0x08048f56 <+150>:    jmp    0x8048f80 <main+192>            ; jump to <main+192> (end of function)
    0x08048f58 <+152>:    mov    eax,ds:0x80ee170                ; eax = stderr
@@ -76,21 +75,16 @@ Dump of assembler code for function main:
 End of assembler dump.
 ```
 
-After analysing the source code, we know that the program expects an integer as first argument and compare it to the value `423`.
+After analysing the source code, we easily understand that the program expects an integer as first argument and compare it to the value '423' in order to spawn a shell via `execv`.
 
 ## Exploit
 
-```console
-./level0 423
-```
-
-Then, the program sets the user and group ID to the level1 ones and executes a shell thanks to `execv` function.
-
-We are loggued in as level1 user so we can display the content of the `.pass` file.
+All that we have to do here is to provide the good argument to the executable, then use the shell spawned with the level1 rights to display the content of the '.pass' file. 
 
 ```console
-whoami
+level0@RainFall:~$ ./level0 423
+$ whoami
 level1
-cat /home/user/level1/.pass
+$ cat /home/user/level1/.pass
 1fe8a524fa4bec01ca4ea2a869af2a02260d4a7d5fe7e7c24d8617e6dca12d3a
 ```
