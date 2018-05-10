@@ -144,7 +144,7 @@ Dump of assembler code for function greetuser:
 End of assembler dump.
 ```
 
-A potential vulnerability in this function calling `strcat` wich we already know that it is unsecure.
+A potential vulnerability in this function calling `strcat` which we already know that it is unsecure.
 
 > Note : The exploit here is very similar to `bonus0`, so we will not explain the whole process with the same level of details. In order to be as explicit as possible, we will use the following terms to distinguish the different buffers used in the program :
 - main buffer 1 and 2 : 40 and 32 byte long respectively, declared and filled in the `main` by `strncpy`.
@@ -154,9 +154,9 @@ The program requires two arguments which are copied as strings to main buffers, 
 
 ## Exploit
 
-The exploit is a classic buffer overflow attack, which will occurs on the final buffer, when `strcat` will append both main buffers to it thanks to the lack of a terminating '\0' at the enf of the main buffer 1.
+The exploit is a classic buffer overflow attack, which will occurs on the final buffer, when `strcat` will append both main buffers to it thanks to the lack of a terminating '\0' at the end of the main buffer 1.
 
-The first step is to set the environment variable `LANG` to "nl". This way, the first part of the final buffer will be filled by the string "Goedemiddag! " (13 byte long) which will help us to overflow the final buffer. If you set the `LANG` variable to "fi", the copied string will be "Hyvää päivää ". This string contains some wide characters so it will be more complicated to count the resulting number of bytes. Any other value (or none) of the variable gives us the string "Hello " which is not long enough to perform the final buffer overflow.
+The first step is to set the environment variable `LANG` to "nl". This way, the first part of the final buffer will be filled by the string "Goedemiddag! " (13 byte long) which will help us to overflow the final buffer. If we set the `LANG` variable to "fi", the copied string will be "Hyvää päivää ". This string contains some wide characters so it will be more complicated to count the resulting number of bytes. Any other value (or none) of the variable gives us the string "Hello " which is not long enough to perform the final buffer overflow attack.
 
 ```console
 bonus2@RainFall:~$ export LANG=nl

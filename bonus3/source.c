@@ -18,7 +18,7 @@ int			main(int argc, char **argv)
 		fread(buf + 66, 1, 65, fs);
 		fclose(fs);
 		if (strcmp(buf, argv[1]) == 0)
-			execl("/bin/sh" , "sh", NULL);
+			execl("/bin/sh", "sh", NULL);
 		puts(buf + 66);
 	}
 	else

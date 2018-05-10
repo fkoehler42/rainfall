@@ -84,13 +84,13 @@ Dump of assembler code for function main:
 End of assembler dump.
 ```
 
-This level is straightforward, after analysing the code we know that we have to focus on the `strcmp(buffer, [argv1])` instruction to make the program execute `execl("/bin/sh", "sh", NULL)`. The `fopen/memset/fread` process is absolutely useless, no investigation needed here. We look at how `argv[1]` is used along the code before the comparison, and see that it is converted to an integer thanks to `atoi`. This integer is then used as an index of the buffer to set it to '0'.
+This level is straightforward, after analysing the code we understand that we have to focus on the `strcmp(buffer, [argv1])` instruction to make the program execute `execl("/bin/sh", "sh", NULL)`. The `fopen/memset/fread` process is absolutely useless, no investigation needed here. We look at how `argv[1]` is used along the code before the comparison, and see that it is converted to an integer thanks to `atoi`. This integer is then used as an index of the buffer to set its content to '\0'.
 
 ## Exploit
 
-Since we have no idea of what the buffer contains, we try to set the '\0' to its first character (`buf[0] = '\0'`). By doing so, `argv[1]` is equal to the character '0', not the value '\0'. Obviously, in this case, `strcmp` does not return '0' and we do not fulfill the condition to call `execl`.
+Since we have no idea of what the buffer contains, we try to set the '\0' to its first character (`buf[0] = '\0'`). By doing so, `argv[1]` is equal to the character '0', not '\0'. Obviously, in this case, `strcmp` does not return '0' and we do not fulfill the condition to call `execl`.
 
-The solution is to send an argument which , once converted by `atoi`, will return 0; and on the same time the first character of this argument must be equal to '\0'. After some trials, we find the proper way to do this : to send an empty string.
+The solution is to send an argument which, once converted by `atoi`, will return 0; and on the same time the first character of this argument must be equal to '0'. After some trials, we find the proper way to do this : to send an empty string.
 
 ```console
 bonus3@RainFall:~$ ./bonus3 ""

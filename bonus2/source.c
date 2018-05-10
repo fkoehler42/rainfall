@@ -5,8 +5,9 @@
 int		language;
 
 int		greetuser(char *buf1) {
-	char	buf3[72]; // taille a verifier
+	char	buf3[72];
 
+	// not working, just to explain the process
 	switch (language) {
 		case 1 :
 			buf3 = "Hyvää päivää ";
