@@ -247,7 +247,7 @@ _weakness_.
 ```
 
 Here we have a double dereferencement of `eax`. With `"A" * 112` as argument it obviously segfault. Here is why: we
-allready know that if teh argument is bigger than 108 bytes, then it segfaults. After the 108th bytes `memcpy` seems to
+already know that if the argument is bigger than 108 bytes, then it segfaults. After the 108th bytes `memcpy` seems to
 copy an address where we shouldn't have access. Since `0x08048682 <+142>:   mov    edx,DWORD PTR [eax]` try to put the
 content pointed by `eax` into `edx` it will segfault because this address is now `0x41414141`.
 
