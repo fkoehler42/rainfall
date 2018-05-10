@@ -8,7 +8,7 @@ struct		s_struct {
 	char	*str;
 };
 
-char		buf[68];
+static char	buf[68];
 
 void		m() {
 	printf("%s - %d\n", buf, (int)time(NULL));
