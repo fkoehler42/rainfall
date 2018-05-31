@@ -3,7 +3,7 @@
 1. [Analysis](#analysis)
 2. [Exploit](#exploit)
 
-> Please note that due to a programming error, we can easily resolve this level without using the expected vulnerability, but we will act as if the binary worked as intended. The bug make the program to allocate the space of an address instead of a structure.
+> Please note that due to a programming error, we can easily resolve this level without using the expected vulnerability, but we will act as if the binary worked as intended. The bug makes the program to allocate the space of an address instead of a structure.
 
 ## Analysis
 
